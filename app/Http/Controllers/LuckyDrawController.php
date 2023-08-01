@@ -50,7 +50,7 @@ class LuckyDrawController extends Controller
     public function storeSingle(Request $request)
     {
         $winners = LuckyDraw::all()->pluck('user_id');
-        $users = User::where('is_active', true)->whereNotIn('id', $winners)->get();
+        $users = User::where('division', 'SRITI')->orWhere('division', 'JEMPUTAN')->whereNotIn('id', $winners)->get();
 
         if ($users->count() == 0) {
             return ['name' => 'No more users'];
@@ -85,7 +85,7 @@ class LuckyDrawController extends Controller
     {
         $number = Request::get('numbers');
         $winners = LuckyDraw::all()->pluck('user_id');
-        $users = User::where('is_active', true)->whereNotIn('id', $winners)->get();
+        $users = User::where('division', 'PASTI')->orWhere('division', 'JEMPUTAN')->whereNotIn('id', $winners)->get();
 
         if ($users->count() == 0) {
             return [['name' => 'No more users']];

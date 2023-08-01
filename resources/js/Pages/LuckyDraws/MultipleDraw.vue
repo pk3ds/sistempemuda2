@@ -58,7 +58,6 @@ body {
 </style>
 
 <template>
-
     <Head title="Lucky Draw" />
 
     <div class="mx-auto">
@@ -145,5 +144,4 @@ body {
             </div>
         </div>
     </div>
-
 </template>

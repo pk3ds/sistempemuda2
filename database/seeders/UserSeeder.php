@@ -19,10 +19,10 @@ class UserSeeder extends Seeder
         $groups = Group::all()->loadCount('users');
 
         User::create([
-            'staff_id' => 'TM38432',
-            'email' => 'nazrin.putra@tm.com.my',
-            'name' => 'Nazrin Putra',
-            'division' => 'Committee',
+            'staff_id' => 'TM39712',
+            'email' => 'aiman@aiman.com',
+            'name' => 'Muhammad Amirul Aiman bin Azhari',
+            'division' => 'SRITI',
             'password' => Hash::make('password'),
             'is_committee' => true,
             'is_active' => true,

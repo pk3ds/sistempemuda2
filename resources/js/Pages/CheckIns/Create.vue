@@ -47,7 +47,6 @@ const formatDate = (date) => {
             <div class="grow ml-6">
                 <p class="font-bold mb-1">{{ $page.props.auth.user.name }}</p>
                 <p class="text-gray-500">{{ $page.props.auth.user.email }}</p>
-                <p class="text-gray-500">{{ $page.props.auth.user.staff_id }}</p>
             </div>
         </div>
 
@@ -60,12 +59,6 @@ const formatDate = (date) => {
             {{ $page.props.flash.status }}
             <p>Here are some links that might be useful for you:</p>
             <ul class="list-disc mx-4">
-                <li>
-                    <a href="https://www.tmonearea.com/" target="_blank"
-                        class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Info Pack
-                    </a>
-                </li>
                 <li>
                     <Link :href="route('dashboard')"
                         class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

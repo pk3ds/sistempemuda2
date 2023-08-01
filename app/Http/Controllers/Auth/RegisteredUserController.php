@@ -33,21 +33,25 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($request);
         $groups = Group::all()->loadCount('users');
         $groupId = $groups->sortBy('users_count')->first()->id;
-        $staffId = strtoupper($request->get('staff_id'));
+        // $staffId = strtoupper($request->get('staff_id'));
 
         $request->validate([
-            'staff_id' => 'required|string|max:255|unique:users',
+            // 'staff_id' => 'required|string|max:255|unique:users',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:' . User::class,
+            // 'email' => 'required|string|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'staff_id' => $staffId,
+            // 'staff_id' => $staffId,
             'name' => $request->name,
-            'email' => $request->email,
+            'phone' => $request->phone,
+            // 'email' => $request->email,
+            'division' => $request->division,
             'password' => Hash::make($request->password),
             'group_id' => $groupId,
             'is_active' => true,
