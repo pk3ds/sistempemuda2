@@ -29,4 +29,10 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    // public function store(Request $request) {
+    //     $validator = Validator::validate($request->all(), [
+
+    //     ]);
+    // }
 }

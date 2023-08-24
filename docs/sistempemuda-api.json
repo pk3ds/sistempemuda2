@@ -1,0 +1,27 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"Sistem Pemuda Api",
+      "version":"1.0"
+    },
+    "servers": [
+      {"url":"https://localhost:8000/"}
+    ],
+    "paths": {
+        "/api/users": {
+            "post": {
+                "description": "register new users",
+            }
+        },
+        "/api/signin": {
+            "post": {
+                "description": "login new user",
+            }
+        },
+        "/api/logout": {
+            "delete": {
+                "description": "logout user",
+            }
+        }
+    }
+  }
