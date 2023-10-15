@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
         $out->writeln($request);
@@ -68,6 +68,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return Inertia::location('/dashboard');
+        return redirect()->intended(RouteServiceProvider::HOME);
+
+        // return Inertia::location('/dashboard');
     }
 }

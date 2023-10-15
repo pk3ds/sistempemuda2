@@ -92,7 +92,7 @@ const showingNavigationDropdown = ref(false);
                                             :href="route('draws.winners')">
                                             Lucky Draw
                                         </DropdownLink>
-                                        <DropdownLink v-if="$page.props.auth.can['view navs']" :href="route('logout')"
+                                        <DropdownLink :href="route('logout')"
                                             method="post" as="button">
                                             Logout
                                         </DropdownLink>

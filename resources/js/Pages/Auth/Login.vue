@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -23,6 +24,11 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const registerRedirect = () => {
+    window.location = 'register';
+    // route('register');
+}
 </script>
 
 <template>
@@ -69,6 +75,16 @@ const submit = () => {
                 <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </PrimaryButton>
+
+                <SecondaryButton class="ml-4" @click="registerRedirect()">
+                    Register
+                </SecondaryButton>
+                
+                <!-- <Link :href="route('register')">
+                    Register
+                </Link> -->
+
+                <!-- <button @click="registerRedirect()">Button2</button> -->
             </div>
         </form>
     </GuestLayout>

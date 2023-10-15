@@ -223,7 +223,7 @@ const form = useForm({
             </h2>
 
             <div class="flex justify-center" id="qr-code">
-                <QRCodeVue3 :width="1000" :height="1000" :value="route('register')"
+                <QRCodeVue3 :width="1000" :height="1000" :value="route('checkins.create', meeting)"
                     :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' }"
                     :image="'/assets/images/logo.png'"
                     :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }" :dotsOptions="{
@@ -245,7 +245,7 @@ const form = useForm({
             <div class="mt-6 flex justify-center">
                 <PrimaryButton @click="downloadQr" class="mx-4"> Download </PrimaryButton>
                 <SecondaryButton class="mx-4">
-                    <Link :href="route('register')">Link</Link>
+                    <Link :href="route('checkins.create', meeting)">Link</Link>
                 </SecondaryButton>
                 <SecondaryButton @click="closeModal" class="mx-4"> Close </SecondaryButton>
             </div>
