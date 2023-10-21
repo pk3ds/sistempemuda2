@@ -22,18 +22,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'group_id',
-        'staff_id',
+        'username',
         'email',
         'name',
         'phone',
         'password',
-        'points',
         'is_committee',
         'is_active',
         'activated_at',
-        'division',
-        'facilitator_id',
+        'validate_phone',
+        'ic_number',
+        'alamat',
+        'no_ahli',
     ];
 
     /**
@@ -62,7 +62,7 @@ class User extends Authenticatable
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('staff_id', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%');
             });
         });
@@ -80,16 +80,6 @@ class User extends Authenticatable
         });
     }
 
-    public function group()
-    {
-        return $this->belongsTo(Group::class);
-    }
-
-    public function awards()
-    {
-        return $this->morphMany(Award::class, 'awardable');
-    }
-
     public function checkIns()
     {
         return $this->hasMany(CheckIn::class);
@@ -98,25 +88,5 @@ class User extends Authenticatable
     public function histories()
     {
         return $this->morphMany(History::class, 'loggable');
-    }
-
-    public function facilitator()
-    {
-        return $this->belongsTo(self::class, 'facilitator_id');
-    }
-
-    public function users()
-    {
-        return $this->hasMany(self::class, 'facilitator_id');
-    }
-
-    public function leaderGroup()
-    {
-        return $this->belongsTo(Group::class, 'leader_id');
-    }
-
-    public function coleaderGroup()
-    {
-        return $this->belongsTo(Group::class, 'coleader_id');
     }
 }

@@ -93,19 +93,15 @@ export default {
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                        Staff ID
+                                                        Username
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                                        No Tel
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                         Activation
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                        Contingent
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                        Points
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -120,16 +116,13 @@ export default {
                                                         <Link :href="route('users.edit', user)">{{ user.name }}</Link>
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                        {{ user.staff_id }}
+                                                        {{ user.username }}
+                                                    </td>
+                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
+                                                        {{ user.phone }}
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
                                                         {{ getActivation(user.is_active, user.activated_at) }}
-                                                    </td>
-                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                        {{ user.group ? user.group.name : 'None' }}
-                                                    </td>
-                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                        {{ user.points }}
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
                                                         <SecondaryButton class="mx-1">

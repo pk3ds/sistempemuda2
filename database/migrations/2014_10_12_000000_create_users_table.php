@@ -15,13 +15,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('facilitator_id')->nullable();
-            $table->string('staff_id')->nullable();
+            $table->string('username')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('name');
-            $table->string('phone')->nullable();
-            $table->string('division')->nullable();
-            $table->integer('points')->default(0);
+            $table->string('phone')->nullable()->unique();
             $table->boolean('is_committee')->default(false);
             $table->boolean('is_active')->default(false);
             $table->string('password');
@@ -29,6 +26,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('activated_at')->nullable();
             $table->timestamps();
+            $table->string('no_ahli')->nullable();
+            $table->string('alamat')->nullable();
             $table->softDeletes();
         });
     }

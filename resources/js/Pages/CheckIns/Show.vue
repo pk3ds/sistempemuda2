@@ -53,12 +53,6 @@ const formatDate = (date) => {
             <p>Here are some links that might be useful for you:</p>
             <ul class="list-disc mx-4">
                 <li>
-                    <a href="https://www.tmonearea.com/" target="_blank"
-                        class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Info Pack
-                    </a>
-                </li>
-                <li>
                     <Link :href="route('dashboard')"
                         class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Dashboard</Link>
@@ -71,12 +65,6 @@ const formatDate = (date) => {
             <p class="mb-3">Check in time: <span class="font-semibold">{{ formatDate(checkIn.created_at) }}</span></p>
             <p>Here are some links that might be useful for you:</p>
             <ul class="list-disc mx-4">
-                <li>
-                    <a href="https://www.tmonearea.com/" target="_blank"
-                        class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Info Pack
-                    </a>
-                </li>
                 <li>
                     <Link :href="route('dashboard')"
                         class="hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

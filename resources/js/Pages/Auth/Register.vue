@@ -10,7 +10,7 @@ import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 const form = useForm({
     staff_id: '',
     name: '',
-    // email: '',
+    email: '',
     password: 'password',
     password_confirmation: 'password',
     phone: '',

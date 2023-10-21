@@ -14,7 +14,7 @@ defineProps({
 });
 
 const form = useForm({
-    staff_id: '',
+    username: '',
     password: '',
     remember: false,
 });
@@ -42,12 +42,12 @@ const registerRedirect = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="staff_id" value="Staff ID" />
+                <InputLabel for="username" value="Username" />
 
-                <TextInput id="staff_id" type="text" class="mt-1 block w-full" v-model="form.staff_id" required
+                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required
                     autofocus autocomplete="username" />
 
-                <InputError class="mt-2" :message="form.errors.staff_id" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="mt-4">

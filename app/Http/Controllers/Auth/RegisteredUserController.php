@@ -35,25 +35,21 @@ class RegisteredUserController extends Controller
     {
         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
         $out->writeln($request);
-        $groups = Group::all()->loadCount('users');
-        $groupId = $groups->sortBy('users_count')->first()->id;
-        // $staffId = strtoupper($request->get('staff_id'));
+        $username = $request->get('username');
 
         $request->validate([
-            // 'staff_id' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users',
             'name' => 'required|string|max:255',
             // 'email' => 'required|string|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            // 'staff_id' => $staffId,
+            'username' => $username,
             'name' => $request->name,
             'phone' => $request->phone,
-            // 'email' => $request->email,
-            'division' => $request->division,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
-            'group_id' => $groupId,
             'is_active' => true,
             'activated_at' => now(),
         ])->assignRole('User');
