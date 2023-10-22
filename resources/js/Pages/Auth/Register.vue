@@ -102,7 +102,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="alamat" value="alamat" />
+                <InputLabel for="alamat" value="Alamat" />
 
                 <TextInput id="alamat" type="text" class="mt-1 block w-full" v-model="form.alamat"
                     autocomplete="alamat" />

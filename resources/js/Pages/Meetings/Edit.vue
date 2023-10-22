@@ -148,7 +148,7 @@ const form = useForm({
                                     <div class="block mt-4">
                                         <label class="flex items-center">
                                             <Checkbox name="ahli" v-model:checked="form.ahli" />
-                                            <span class="ml-2 text-sm text-gray-600">ahli?</span>
+                                            <span class="ml-2 text-sm text-gray-600">Ahli?</span>
                                         </label>
                                     </div>
 
