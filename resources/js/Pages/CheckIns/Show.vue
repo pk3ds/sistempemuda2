@@ -43,7 +43,7 @@ const formatDate = (date) => {
             <div class="grow ml-6">
                 <p class="font-bold mb-1">{{ $page.props.auth.user.name }}</p>
                 <p class="text-gray-500">{{ $page.props.auth.user.email }}</p>
-                <p class="text-gray-500">{{ $page.props.auth.user.staff_id }}</p>
+                <p class="text-gray-500">{{ $page.props.auth.user.username }}</p>
             </div>
         </div>
 

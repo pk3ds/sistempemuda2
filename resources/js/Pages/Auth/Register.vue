@@ -8,13 +8,14 @@ import SelectInput from '@/Components/SelectInput.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 
 const form = useForm({
-    staff_id: '',
+    username: '',
     name: '',
     email: '',
-    password: 'password',
-    password_confirmation: 'password',
+    password: '',
+    password_confirmation: '',
     phone: '',
-    division: '',
+    ic_number: '',
+    alamat: '',
     terms: false,
 });
 
@@ -33,12 +34,48 @@ const submit = () => {
         <form @submit.prevent="submit">
 
             <div class="mt-4">
+                <InputLabel for="username" value="Username" />
+
+                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required
+                    autocomplete="username" />
+
+                <InputError class="mt-2" :message="form.errors.username" />
+            </div>
+
+            <div class="mt-4">
                 <InputLabel for="name" value="Nama" />
 
                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required
                     autocomplete="name" />
 
                 <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="email" value="Email" />
+
+                <TextInput id="email" type="text" class="mt-1 block w-full" v-model="form.email" required
+                    autocomplete="email" password />
+
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="password" value="Password" />
+
+                <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
+                    autocomplete="password" password />
+
+                <InputError class="mt-2" :message="form.errors.password" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="password_confirmation" value="Password Confirmation" />
+
+                <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required
+                    autocomplete="password_confirmation" />
+
+                <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
             <div class="mt-4">
@@ -51,15 +88,21 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="entiti" value="Entiti" />
-                <SelectInput id="division" class="mt-1 block w-full" v-model="form.division">
-                    <!-- inline object literal -->
-                    <option :value="empty">Sila Pilih</option>
-                    <option :value="JEMPUTAN">JEMPUTAN</option>
-                    <option :value="PASTI">PASTI</option>
-                    <option :value="SRITI">SRITI</option>
-                </SelectInput>
+                <InputLabel for="ic_number" value="No K/P" />
 
+                <TextInput id="ic_number" type="text" class="mt-1 block w-full" v-model="form.ic_number"
+                    autocomplete="ic_number" />
+
+                <InputError class="mt-2" :message="form.errors.ic_number" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="alamat" value="alamat" />
+
+                <TextInput id="alamat" type="text" class="mt-1 block w-full" v-model="form.alamat"
+                    autocomplete="alamat" />
+
+                <InputError class="mt-2" :message="form.errors.alamat" />
             </div>
 
             <div class="flex items-center justify-end mt-4">

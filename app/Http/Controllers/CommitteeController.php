@@ -48,29 +48,28 @@ class CommitteeController extends Controller
      */
     public function store(Request $request)
     {
-        $staffId = strtoupper(Request::get('staff_id'));
+        $username = Request::get('username');
 
         Request::validate([
-            'staff_id' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
             'phone' => 'required|string|unique:users',
-            'division' => 'nullable|string|max:255',
         ]);
 
         $user = User::create([
-            'staff_id' => $staffId,
+            'username' => $username,
             'name' => Request::get('name'),
             'email' => Request::get('email'),
             'phone' => Request::get('phone'),
             'division' => Request::get('division'),
-            'password' => Hash::make($staffId),
+            'password' => Hash::make($username),
             'is_committee' => true,
         ])->assignRole('Committee');
 
         return redirect()
             ->route('committees')
-            ->with('success', 'Committee "' . $user->staff_id . '" created, default password is "' . $user->staff_id . '"');
+            ->with('success', 'Committee "' . $user->username . '" created, default password is "' . $user->username . '"');
     }
 
     /**
@@ -109,11 +108,10 @@ class CommitteeController extends Controller
     {
         DB::beginTransaction();
         $validated = Request::validate([
-            'staff_id' => ['required', 'max:50', Rule::unique('users')->ignore($user->id)],
+            'username' => ['required', 'max:50', Rule::unique('users')->ignore($user->id)],
             'name' => ['required', 'max:50'],
             'email' => ['required', 'max:50', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => ['required', 'max:50', Rule::unique('users')->ignore($user->id)],
-            'division' => ['nullable', 'max:50'],
         ]);
 
         if (Request::get('role_id')) {
@@ -124,13 +122,13 @@ class CommitteeController extends Controller
                 $user->save();
                 $user->update($validated);
                 DB::commit();
-                return redirect()->route('users')->with('success', 'User "' . $user->staff_id . '" role changed to user');
+                return redirect()->route('users')->with('success', 'User "' . $user->username . '" role changed to user');
             }
         }
 
         $user->update($validated);
         DB::commit();
-        return redirect()->back()->with('success', 'Committee "' . $user->staff_id . '" updated');
+        return redirect()->back()->with('success', 'Committee "' . $user->username . '" updated');
     }
 
     /**
@@ -145,6 +143,6 @@ class CommitteeController extends Controller
 
         return redirect()
             ->route('committees')
-            ->with('error', 'Committee "' . $user->staff_id . '" deleted');
+            ->with('error', 'Committee "' . $user->username . '" deleted');
     }
 }

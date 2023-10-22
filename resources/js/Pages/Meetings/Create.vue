@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useForm, Head } from '@inertiajs/inertia-vue3';
 import Datepicker from '@vuepic/vue-datepicker';
+import Checkbox from '@/Components/Checkbox.vue';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 function back() {
@@ -18,6 +19,7 @@ const form = useForm({
     description: "",
     start_at: "",
     end_at: "",
+    ahli: false,
 });
 </script>
 
@@ -74,6 +76,13 @@ const form = useForm({
                                 <Datepicker v-model="form.end_at" :format="'dd MMM yyyy, HH:mm'" required></Datepicker>
 
                                 <InputError class="mt-2" :message="form.errors.end_at" />
+                            </div>
+
+                            <div class="block mt-4">
+                                <label class="flex items-center">
+                                    <Checkbox name="ahli" v-model:checked="form.ahli" />
+                                    <span class="ml-2 text-sm text-gray-600">ahli?</span>
+                                </label>
                             </div>
 
                             <div class="flex items-center gap-4">
