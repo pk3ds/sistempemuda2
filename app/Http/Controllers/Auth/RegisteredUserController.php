@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'ic_number' => ['nullable', 'string|min:14'],
+            'ic_number' => 'nullable|string|min:12',
             'phone' => 'required|string|min:11'
         ]);
 
