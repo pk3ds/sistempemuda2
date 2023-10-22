@@ -89,7 +89,7 @@ const form = useForm({
                                             v-if="!meeting.deleted_at && new Date() < new Date(meeting.end_at)">QR Code
                                         </PrimaryButton>
                                         <PrimaryButton
-                                            v-if="new Date() > new Date(meeting.end_at) && meeting.scores.length === 0"
+                                            v-if="new Date() > new Date(meeting.end_at)"
                                             @click="calculateAttendance">
                                             Calculate Attendance
                                         </PrimaryButton>
