@@ -20,6 +20,11 @@ const form = useForm({
 });
 
 const submit = () => {
+    form.phone = form.phone.replace(/[^0-9 ]/g, '');
+    if (form.phone.substring(0,1) !== '6') {
+        form.phone = '6' + form.phone;
+    }
+    form.ic_number = form.ic_number.replace(/[^0-9 ]/g, '');
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
