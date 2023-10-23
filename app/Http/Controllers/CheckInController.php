@@ -8,6 +8,7 @@ use App\Models\CheckIn;
 use App\Models\History;
 use App\Models\Meeting;
 use App\Models\Score;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -52,9 +53,11 @@ class CheckInController extends Controller
      * @param  \App\Models\Meeting  $meeting
      * @return \Illuminate\Http\Response
      */
-    public function store(Meeting $meeting)
+    public function store(Meeting $meeting, Request $request)
     {
         DB::beginTransaction();
+        // $user = User::where('id', Auth::user()->id)
+        //         ->get(); 
         if (strtotime(now()) > strtotime($meeting->end_at)) {
             // Disable check in, past sessions
             DB::rollBack();
@@ -70,13 +73,15 @@ class CheckInController extends Controller
                 'success' => 'Anda berjaya daftar ke sesi ini. Moga bermanfaat!',
             ];
         }
+        Auth::user()->no_ahli = $request->no_ahli;
         Auth::user()->save();
 
         $checkIn = CheckIn::create([
             'user_id' => Auth::user()->id,
             'meeting_id' => $meeting->id,
         ]);
-
+        
+        // $user->save();
         DB::commit();
         return redirect()
             ->route('checkins.show', ['meeting' => $meeting, 'checkIn' => $checkIn])

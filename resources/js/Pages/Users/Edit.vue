@@ -28,8 +28,6 @@ function reset() {
 
 const props = defineProps({
     user: Object,
-    facilitators: Object,
-    groups: Object,
     roles: Object,
 });
 

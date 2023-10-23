@@ -2,15 +2,21 @@
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     meeting: Object,
 });
 
-const form = useForm();
+const form = useForm({
+    no_ahli: '',
+});
 
 const submit = () => {
-    form.post(route('checkins.store', props.meeting));
+    form.post(route('checkins.store', {
+        meeting: props.meeting,
+        no_ahli: no_ahli,
+    }));
 };
 
 const formatDate = (date) => {
@@ -47,12 +53,17 @@ const formatDate = (date) => {
             <div class="grow ml-6">
                 <p class="font-bold mb-1">{{ $page.props.auth.user.name }}</p>
                 <p class="text-gray-500">{{ $page.props.auth.user.email }}</p>
+                <!-- <input v-model="message" placeholder="No ahli pas" class="mt-1 block w-full" /> -->
+                <!-- <TextInput placeholder="No ahli pas" class="mt-1 block w-full"/> -->
+                <div v-if="meeting.ahli && !$page.props.auth.user.no_ahli">
+                    <TextInput id="no_ahli" type="text" class="mt-1 block w-full" v-model="form.no_ahli" required
+                                        autofocus placeholder="No ahli pas" />
+                </div>
             </div>
         </div>
 
         <div v-if="!$page.props.flash.status" class="mb-4 text-sm text-gray-600">
-            You made it! Before checking in, could you verify the information above?
-            If there is anything wrong, we will gladly fix it for you.
+            Tahniah, anda berjaya!
         </div>
 
         <div v-if="$page.props.flash.status" class="mb-4 text-sm text-gray-600">
