@@ -81,7 +81,6 @@ class CheckInController extends Controller
             'meeting_id' => $meeting->id,
         ]);
         
-        // $user->save();
         DB::commit();
         return redirect()
             ->route('checkins.show', ['meeting' => $meeting, 'checkIn' => $checkIn])
