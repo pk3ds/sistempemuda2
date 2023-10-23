@@ -181,18 +181,18 @@ const form = useForm({
                     :image="'/assets/images/logo.png'"
                     :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }" :dotsOptions="{
                         type: 'dots',
-                        color: '#2362dd',
+                        color: '#01a66e',
                         gradient: {
                             type: 'linear',
                             rotation: 0,
                             colorStops: [
-                                { offset: 0, color: '#2362dd' },
-                                { offset: 1, color: '#2362dd' },
+                                { offset: 0, color: '#01a66e' },
+                                { offset: 1, color: '#01a66e' },
                             ],
                         },
                     }" :backgroundOptions="{ color: '#ffffff' }"
-                    :cornersSquareOptions="{ type: 'extra-rounded', color: '#26249a' }"
-                    :cornersDotOptions="{ type: 'rounded', color: '#26249a' }" />
+                    :cornersSquareOptions="{ type: 'extra-rounded', color: '#007247' }"
+                    :cornersDotOptions="{ type: 'rounded', color: '#007247' }" />
             </div>
 
             <div class="mt-6 flex justify-center">
