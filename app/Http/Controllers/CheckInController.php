@@ -56,8 +56,6 @@ class CheckInController extends Controller
     public function store(Meeting $meeting, Request $request)
     {
         DB::beginTransaction();
-        // $user = User::where('id', Auth::user()->id)
-        //         ->get(); 
         if (strtotime(now()) > strtotime($meeting->end_at)) {
             // Disable check in, past sessions
             DB::rollBack();
