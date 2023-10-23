@@ -39,7 +39,7 @@ import { Link } from "@inertiajs/inertia-vue3";
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-blue-300">
         <div>
             <Link :href="route('welcome')">
-            <ApplicationLogo class="fill-current text-gray-500" />
+            <ApplicationLogo class="fill-current text-gray-500" style="width: 644px;" />
             </Link>
         </div>
 
