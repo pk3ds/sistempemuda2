@@ -65,7 +65,7 @@ class CheckInController extends Controller
                     'status' => 'Harap maaf, sesi ini sudah tamat.',
                     'error' => 'Sesi sudah tamat',
                 ]);  
-        } elseif (strtotime(now()) > strtotime($meeting->start_at)) {
+        } else {
             $flash = [
                 'status' => 'Terima kasih dan selamat datang ke sesi ini.',
                 'success' => 'Anda berjaya daftar ke sesi ini. Moga bermanfaat!',
