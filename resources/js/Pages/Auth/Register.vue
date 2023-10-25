@@ -25,6 +25,10 @@ const submit = () => {
         form.phone = '6' + form.phone;
     }
     form.ic_number = form.ic_number.replace(/[^0-9 ]/g, '');
+    const nameStr = form.name.split(" ");
+    form.name = nameStr.map((names) => {
+        return names[0].toUpperCase() + names.substring(1).toLowerCase();
+    }).join(" ");
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
