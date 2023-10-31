@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Exception;
+use App\Providers\RouteServiceProvider;
 
 class GoogleController extends Controller
 {
@@ -23,7 +24,7 @@ class GoogleController extends Controller
             if ($finduser) {
                 Auth::login($finduser);
 
-                return redirect('/dashboard');
+                return redirect()->intended(RouteServiceProvider::HOME);
             } else {
                 $newUser = User::create([
                     'name' => $user->name,
@@ -33,9 +34,11 @@ class GoogleController extends Controller
                     'password' => encrypt('password')
                 ]);
 
+                event(new Registered($newUser));
+
                 Auth::login($newUser);
 
-                return redirect('/dashboad');
+                return redirect()->intended(RouteServiceProvider::HOME);
             }
         } catch (Exception $e) {
             dd($e->getMessage());
