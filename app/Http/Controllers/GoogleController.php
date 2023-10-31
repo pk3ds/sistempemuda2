@@ -11,7 +11,7 @@ class GoogleController extends Controller
 {
     public function signInWithGoogle()
     {
-        return Socialite::drive('google')->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     public function callbackToGoogle()
