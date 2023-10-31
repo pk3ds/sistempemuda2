@@ -61,10 +61,6 @@ class User extends Authenticatable
         'activated_at' => 'datetime',
     ];
 
-    protected $appends = [
-        'profile_photo_url',
-    ];
-
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

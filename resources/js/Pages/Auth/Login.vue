@@ -29,6 +29,10 @@ const registerRedirect = () => {
     window.location = 'register';
     // route('register');
 }
+
+const googleRedirect = () => {
+    window.location = 'auth/google';
+}
 </script>
 
 <template>
@@ -72,19 +76,17 @@ const registerRedirect = () => {
                 Forgot your password?
                 </Link>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <PrimaryButton class="ml-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </PrimaryButton>
 
-                <SecondaryButton class="ml-4" @click="registerRedirect()">
+                <SecondaryButton class="ml-2" @click="registerRedirect()">
                     Register
                 </SecondaryButton>
-                
-                <!-- <Link :href="route('register')">
-                    Register
-                </Link> -->
 
-                <!-- <button @click="registerRedirect()">Button2</button> -->
+                <SecondaryButton class="ml-2" style="height: 35px;" @click="googleRedirect()">
+                    <img v-bind:src="'https://www.vectorlogo.zone/logos/google/google-ar21.svg'">
+                </SecondaryButton>
             </div>
         </form>
     </GuestLayout>
