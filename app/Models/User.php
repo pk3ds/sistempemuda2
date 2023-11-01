@@ -35,7 +35,8 @@ class User extends Authenticatable
         'alamat',
         'no_ahli',
         'gauth_id',
-        'gauth_type'
+        'gauth_type',
+        'gauth_name',
     ];
 
     /**

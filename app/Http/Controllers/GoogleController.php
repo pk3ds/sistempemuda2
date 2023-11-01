@@ -38,9 +38,7 @@ class GoogleController extends Controller
             } else {
                 //FIXME add if empty redirect to registration page
                 $newUser = User::create([
-                    'username' => $user->id,
-                    'phone' => $user->id,
-                    'name' => $user->name,
+                    'gauth_name' => $user->name,
                     'email' => $user->email,
                     'gauth_id' => $user->id,
                     'gauth_type' => 'google',
