@@ -32,7 +32,6 @@ class GoogleController extends Controller
                 $user = Socialite::driver('google')->user();
             } catch (Exception $e) {
                 $user = Socialite::driver('google')->stateless()->user();
-                dd($e);
             }
            
 
@@ -60,7 +59,7 @@ class GoogleController extends Controller
                 return Redirect::route('registerGoogle.edit', $newUser);
             }
         } catch (Exception $e) {
-            dd($e);
+            return redirect('auth/google');
         }
     }
 
