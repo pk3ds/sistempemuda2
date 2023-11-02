@@ -15,7 +15,6 @@ const form = useForm({
 const submit = () => {
     form.post(route('checkins.store', {
         meeting: props.meeting,
-        no_ahli: no_ahli,
     }));
 };
 

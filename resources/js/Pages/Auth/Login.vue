@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import GoogleButton from '@/Components/GoogleButton.vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -89,10 +90,8 @@ const googleRedirect = () => {
                 </div>
             </div>
         </form>
-        <div class="flex items-center justify-center mt-4">
-            <SecondaryButton class="w-full justify-center" style="height: 35px;" @click="googleRedirect()">
-                Sign in with <img v-bind:src="'https://www.vectorlogo.zone/logos/google/google-ar21.svg'">
-            </SecondaryButton>
+        <div class="flex items-center justify-end mt-4">
+            <GoogleButton @click="googleRedirect()"></GoogleButton>
         </div>
     </GuestLayout>
 </template>
