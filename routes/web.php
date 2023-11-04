@@ -16,6 +16,7 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\LuckyDrawController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +95,13 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::get('/winners/{id}/edit', [WinnerController::class, 'edit'])->name('winners.edit');
     Route::patch('/winners{id}', [WinnerController::class, 'update'])->name('winners.update');
     Route::put('/winners{id}/claim', [WinnerController::class, 'claim'])->name('winners.claim');
+
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}/delete', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
 Route::middleware('auth')->group(function () {

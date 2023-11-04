@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Award;
 use App\Models\CheckIn;
+use App\Models\Product;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -93,5 +94,10 @@ class User extends Authenticatable
     public function histories()
     {
         return $this->morphMany(History::class, 'loggable');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }
