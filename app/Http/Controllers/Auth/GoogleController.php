@@ -45,7 +45,6 @@ class GoogleController extends Controller
                 Auth::login($finduser);
                 return redirect()->intended(RouteServiceProvider::HOME);
             } else {
-                //FIXME add if empty redirect to registration page
                 $newUser = User::create([
                     'gauth_name' => $user->name,
                     'email' => $user->email,
@@ -72,6 +71,7 @@ class GoogleController extends Controller
 
     public function store(Request $request, User $user)
     {
+        #FIXME can only register if same with user session
         DB::beginTransaction();
         $phone = $request->get('phone');
         $phone = str_replace(' ', '-', $phone);
