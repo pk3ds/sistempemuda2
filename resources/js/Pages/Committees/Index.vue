@@ -80,7 +80,7 @@ export default {
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                        Staff ID
+                                                        Username
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -100,7 +100,7 @@ export default {
                                                         </Link>
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                        {{ user.staff_id }}
+                                                        {{ user.username }}
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
                                                         {{ user.phone }}

@@ -17,12 +17,12 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $domain = 'tm.com.my';
-        $staffId = fake()->unique()->numerify('TM#####');
-        $staffEmail = $staffId . "@" . $domain;
+        $domain = 'ddns.net';
+        $username = fake()->unique()->numerify('TM#####');
+        $staffEmail = $username . "@" . $domain;
 
         return [
-            'staff_id' => $staffId,
+            'username' => $username,
             'name' => fake()->name(),
             'email' => $staffEmail,
             'email_verified_at' => now(),

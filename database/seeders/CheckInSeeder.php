@@ -24,9 +24,7 @@ class CheckInSeeder extends Seeder
             foreach ($meetings as $meeting) {
                 CheckIn::create([
                     'user_id' => $user->id,
-                    'group_id' => $user->group?->id,
                     'meeting_id' => $meeting->id,
-                    'points' => 10,
                 ]);
             }
         }

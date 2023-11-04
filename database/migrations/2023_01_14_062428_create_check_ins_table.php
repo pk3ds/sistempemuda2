@@ -16,9 +16,7 @@ return new class extends Migration
         Schema::create('check_ins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('group_id')->nullable()->constrained();
             $table->foreignId('meeting_id')->nullable()->constrained();
-            $table->integer('points')->default(0);
             $table->timestamps();
         });
     }

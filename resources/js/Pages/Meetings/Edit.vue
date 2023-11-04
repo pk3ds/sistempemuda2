@@ -14,6 +14,7 @@ import { ref } from 'vue';
 import { saveAsJpeg } from 'save-html-as-image';
 import Accordion from "@/Components/Accordion.vue";
 import { Inertia } from '@inertiajs/inertia';
+import Checkbox from '@/Components/Checkbox.vue';
 
 function back() {
     window.history.back();
@@ -47,6 +48,7 @@ const form = useForm({
     description: props.meeting.description,
     start_at: props.meeting.start_at,
     end_at: props.meeting.end_at,
+    ahli: props.meeting.ahli === 1,
 });
 </script>
 
@@ -87,7 +89,7 @@ const form = useForm({
                                             v-if="!meeting.deleted_at && new Date() < new Date(meeting.end_at)">QR Code
                                         </PrimaryButton>
                                         <PrimaryButton
-                                            v-if="new Date() > new Date(meeting.end_at) && meeting.scores.length === 0"
+                                            v-if="new Date() > new Date(meeting.end_at)"
                                             @click="calculateAttendance">
                                             Calculate Attendance
                                         </PrimaryButton>
@@ -143,6 +145,13 @@ const form = useForm({
                                         <InputError class="mt-2" :message="form.errors.end_at" />
                                     </div>
 
+                                    <div class="block mt-4">
+                                        <label class="flex items-center">
+                                            <Checkbox name="ahli" v-model:checked="form.ahli" />
+                                            <span class="ml-2 text-sm text-gray-600">Ahli?</span>
+                                        </label>
+                                    </div>
+
                                     <div class="flex items-center gap-4">
                                         <PrimaryButton v-if="!meeting.deleted_at" :disabled="form.processing">Update
                                         </PrimaryButton>
@@ -158,62 +167,6 @@ const form = useForm({
             </div>
         </div>
 
-        <div v-if="meeting.scores.length !== 0" class="pt-8 pb-2">
-            <div class="mt-4 md:mt-0 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <Accordion :open="true">
-                        <template v-slot:title>
-                            <span class="font-semibold text-lg my-2">Session Scores</span>
-                        </template>
-                        <template v-slot:content>
-                            <header>
-                                <p class="mt-1 text-sm text-gray-600">
-                                    View all contingent session scores.
-                                </p>
-                            </header>
-                            <div class="flex flex-col">
-                                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                        <div class="overflow-hidden">
-                                            <table class="min-w-full">
-                                                <thead class="bg-white border-b border-t">
-                                                    <tr>
-                                                        <th scope="col"
-                                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                            Contingent Name
-                                                        </th>
-                                                        <th scope="col"
-                                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                            Points
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="score in meeting.scores"
-                                                        class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                        <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                            {{ score.group.name }}
-                                                        </td>
-                                                        <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                            {{ score.points }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr v-if="meeting.scores.length === 0">
-                                                        <td class="px-6 py-4 border-t text-center" colspan="2">
-                                                            No scores found.
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </Accordion>
-                </div>
-            </div>
-        </div>
     </AuthenticatedLayout>
 
     <QRModal :show="showModal" @close="closeModal">
@@ -223,29 +176,29 @@ const form = useForm({
             </h2>
 
             <div class="flex justify-center" id="qr-code">
-                <QRCodeVue3 :width="1000" :height="1000" :value="route('register')"
+                <QRCodeVue3 :width="1000" :height="1000" :value="route('checkins.create', meeting)"
                     :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' }"
                     :image="'/assets/images/logo.png'"
                     :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }" :dotsOptions="{
                         type: 'dots',
-                        color: '#2362dd',
+                        color: '#01a66e',
                         gradient: {
                             type: 'linear',
                             rotation: 0,
                             colorStops: [
-                                { offset: 0, color: '#2362dd' },
-                                { offset: 1, color: '#2362dd' },
+                                { offset: 0, color: '#01a66e' },
+                                { offset: 1, color: '#01a66e' },
                             ],
                         },
                     }" :backgroundOptions="{ color: '#ffffff' }"
-                    :cornersSquareOptions="{ type: 'extra-rounded', color: '#26249a' }"
-                    :cornersDotOptions="{ type: 'rounded', color: '#26249a' }" />
+                    :cornersSquareOptions="{ type: 'extra-rounded', color: '#007247' }"
+                    :cornersDotOptions="{ type: 'rounded', color: '#007247' }" />
             </div>
 
             <div class="mt-6 flex justify-center">
                 <PrimaryButton @click="downloadQr" class="mx-4"> Download </PrimaryButton>
                 <SecondaryButton class="mx-4">
-                    <Link :href="route('register')">Link</Link>
+                    <Link :href="route('checkins.create', meeting)">Link</Link>
                 </SecondaryButton>
                 <SecondaryButton @click="closeModal" class="mx-4"> Close </SecondaryButton>
             </div>

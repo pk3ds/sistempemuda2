@@ -12,17 +12,13 @@ function back() {
     window.history.back();
 };
 
-const props = defineProps({
-    facilitators: Object,
-});
-
 const form = useForm({
     name: "",
-    staff_id: "",
+    username: "",
     email: "",
     phone: "",
-    division: "",
-    facilitator_id: "",
+    no_ahli: "",
+    alamat: ""
 });
 </script>
 
@@ -55,12 +51,12 @@ const form = useForm({
                             </div>
 
                             <div>
-                                <InputLabel for="staff_id" value="Staff ID" />
+                                <InputLabel for="username" value="Username" />
 
-                                <TextInput id="staff_id" type="text" class="mt-1 block w-full" v-model="form.staff_id"
-                                    autocomplete="staff_id" />
+                                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username"
+                                    autocomplete="username" />
 
-                                <InputError class="mt-2" :message="form.errors.staff_id" />
+                                <InputError class="mt-2" :message="form.errors.username" />
                             </div>
 
                             <div>
@@ -82,25 +78,21 @@ const form = useForm({
                             </div>
 
                             <div>
-                                <InputLabel for="division" value="Division" />
+                                <InputLabel for="no_ahli" value="No Ahli PAS" />
 
-                                <TextInput id="division" type="text" class="mt-1 block w-full" v-model="form.division"
-                                    autocomplete="division" />
+                                <TextInput id="no_ahli" type="text" class="mt-1 block w-full" v-model="form.no_ahli"
+                                    autocomplete="no_ahli" />
 
-                                <InputError class="mt-2" :message="form.errors.division" />
+                                <InputError class="mt-2" :message="form.errors.no_ahli" />
                             </div>
 
                             <div>
-                                <InputLabel for="facilitator_id" value="Facilitator" />
+                                <InputLabel for="alamat" value="Alamat" />
 
-                                <SelectInput id="facilitator_id" class="mt-1 block w-full"
-                                    v-model="form.facilitator_id">
-                                    <option v-for="facilitator in facilitators" :value="facilitator.id">{{
-                                        facilitator.name
-                                    }}</option>
-                                </SelectInput>
+                                <TextInput id="alamat" type="text" class="mt-1 block w-full" v-model="form.alamat"
+                                    autocomplete="alamat" />
 
-                                <InputError class="mt-2" :message="form.errors.facilitator_id" />
+                                <InputError class="mt-2" :message="form.errors.alamat" />
                             </div>
 
                             <div class="flex items-center gap-4">

@@ -6,6 +6,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import GoogleButton from '@/Components/GoogleButton.vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -13,7 +15,7 @@ defineProps({
 });
 
 const form = useForm({
-    staff_id: '',
+    username: '',
     password: '',
     remember: false,
 });
@@ -23,6 +25,15 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const registerRedirect = () => {
+    window.location = 'register';
+    // route('register');
+}
+
+const googleRedirect = () => {
+    window.location = 'auth/google';
+}
 </script>
 
 <template>
@@ -36,12 +47,12 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="staff_id" value="Staff ID" />
+                <InputLabel for="username" value="Username" />
 
-                <TextInput id="staff_id" type="text" class="mt-1 block w-full" v-model="form.staff_id" required
+                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required
                     autofocus autocomplete="username" />
 
-                <InputError class="mt-2" :message="form.errors.staff_id" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="mt-4">
@@ -60,16 +71,27 @@ const submit = () => {
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Forgot your password?
-                </Link>
+            <div class="flex items-center justify-between mt-4">
+                <div>
+                    <Link v-if="canResetPassword" :href="route('password.request')"
+                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Forgot your password?
+                    </Link>
+                </div>
+                
+                <div>
+                    <PrimaryButton class="ml-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        Log in
+                    </PrimaryButton>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
+                    <SecondaryButton class="ml-2" @click="registerRedirect()">
+                        Register
+                    </SecondaryButton>
+                </div>
             </div>
         </form>
+        <div class="flex items-center justify-end mt-4">
+            <GoogleButton @click="googleRedirect()"></GoogleButton>
+        </div>
     </GuestLayout>
 </template>

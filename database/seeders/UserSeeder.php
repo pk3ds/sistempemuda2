@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Group;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,13 +15,10 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $groups = Group::all()->loadCount('users');
-
         User::create([
-            'staff_id' => 'TM39712',
+            'username' => 'pendakwah92',
             'email' => 'aiman@aiman.com',
             'name' => 'Muhammad Amirul Aiman bin Azhari',
-            'division' => 'SRITI',
             'password' => Hash::make('password'),
             'is_committee' => true,
             'is_active' => true,

@@ -49,10 +49,11 @@ class MeetingController extends Controller
             'description' => 'nullable|string|max:255|',
             'start_at' => 'required|string|max:255|',
             'end_at' => 'required|string|max:255|',
+            'ahli' => 'boolean',
         ]);
 
         Request::merge(['uuid' => Str::uuid()->toString()]);
-        $meeting = Meeting::create(Request::only('uuid', 'name', 'description', 'start_at', 'end_at'));
+        $meeting = Meeting::create(Request::only('uuid', 'name', 'description', 'start_at', 'end_at', 'ahli'));
 
         return redirect()
             ->route('sessions')
@@ -79,7 +80,7 @@ class MeetingController extends Controller
     public function edit(Meeting $meeting)
     {
         return Inertia::render('Meetings/Edit', [
-            'meeting' => $meeting->load('scores.group'),
+            'meeting' => $meeting,
         ]);
     }
 
@@ -97,6 +98,7 @@ class MeetingController extends Controller
             'description' => 'nullable|string|max:255|',
             'start_at' => 'required|string|max:255|',
             'end_at' => 'required|string|max:255|',
+            'ahli' => 'required|boolean',
         ]);
 
         $meeting->update($validated);

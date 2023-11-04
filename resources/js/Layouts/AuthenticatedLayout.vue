@@ -34,14 +34,8 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('groups')" :active="route().current('groups')">
-                                    Contingent
-                                </NavLink>
                                 <NavLink :href="route('users')" :active="route().current('users')">
                                     Users
-                                </NavLink>
-                                <NavLink :href="route('awards')" :active="route().current('awards')">
-                                    Awards
                                 </NavLink>
                                 <NavLink :href="route('sessions')" :active="route().current('sessions')">
                                     Sessions
@@ -92,7 +86,7 @@ const showingNavigationDropdown = ref(false);
                                             :href="route('draws.winners')">
                                             Lucky Draw
                                         </DropdownLink>
-                                        <DropdownLink v-if="$page.props.auth.can['view navs']" :href="route('logout')"
+                                        <DropdownLink :href="route('logout')"
                                             method="post" as="button">
                                             Logout
                                         </DropdownLink>
@@ -131,10 +125,6 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink :href="route('draws.winners')">
                                             Lucky Draw
                                         </DropdownLink>
-                                        <a href="https://www.tmonearea.com/" target="_blank"
-                                            class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Info Pack
-                                        </a>
                                     </template>
                                 </Dropdown>
                             </div>
@@ -175,14 +165,8 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('groups')" :active="route().current('groups')">
-                            Contingent
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('users')" :active="route().current('users')">
                             Users
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('awards')" :active="route().current('awards')">
-                            Awards
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('sessions')" :active="route().current('sessions')">
                             Sessions
@@ -207,16 +191,7 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <a href="https://forms.office.com/pages/responsepage.aspx?id=WXQxFU5-2kWfKqqFhC-pLY29jou8FMZCuiOdBKczFitUMEgwSVpWTVozOVpVUFdHQ0kzU0tZRVRCTy4u"
-                                target="_blank"
-                                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-300 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
-                                Post Convention Survey
-                            </a>
-                            <a href="https://www.tmonearea.com/" target="_blank"
-                                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-300 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
-                                Info Pack
-                            </a>
-                            <ResponsiveNavLink v-if="!$page.props.auth.can['view navs']" :href="route('dashboard')">
+                           <ResponsiveNavLink v-if="!$page.props.auth.can['view navs']" :href="route('dashboard')">
                                 Dashboard
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('draws.winners')">
@@ -239,13 +214,6 @@ const showingNavigationDropdown = ref(false);
                 }" class="sm:hidden">
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="mb-3 space-y-1">
-                            <a href="https://forms.office.com/pages/responsepage.aspx?id=WXQxFU5-2kWfKqqFhC-pLY29jou8FMZCuiOdBKczFitUMEgwSVpWTVozOVpVUFdHQ0kzU0tZRVRCTy4u"
-                                target="_blank"
-                                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-300 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
-                                Post Convention Survey
-                            </a>
-                        </div>
                         <div class="pt-4 pb-1 border-t border-gray-200">
                             <div class="space-y-1">
                                 <ResponsiveNavLink :href="route('login')">
@@ -257,10 +225,6 @@ const showingNavigationDropdown = ref(false);
                                 <ResponsiveNavLink :href="route('draws.winners')">
                                     Lucky Draw
                                 </ResponsiveNavLink>
-                                <a href="https://www.tmonearea.com/" target="_blank"
-                                    class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-300 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out">
-                                    Info Pack
-                                </a>
                             </div>
                         </div>
                     </div>

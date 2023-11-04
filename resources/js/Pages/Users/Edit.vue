@@ -26,42 +26,17 @@ function reset() {
         });
 };
 
-const showModal = ref(false);
-
-const openModal = () => {
-    showModal.value = true;
-};
-
-const closeModal = () => {
-    showModal.value = false;
-};
-
-function insertPoints() {
-    showModal.value = false;
-    pointsForm.put(route('users.points', props.user));
-    pointsForm.points = '';
-};
-
 const props = defineProps({
     user: Object,
-    facilitators: Object,
-    groups: Object,
     roles: Object,
 });
 
 const form = useForm({
     name: props.user.name,
-    staff_id: props.user.staff_id,
+    usernames: props.user.username,
     email: props.user.email,
     phone: props.user.phone,
-    division: props.user.division,
-    group_id: props.user.group_id,
-    facilitator_id: props.user.facilitator_id,
     role_id: props.user.roles[0].id,
-});
-
-const pointsForm = useForm({
-    points: '',
 });
 
 const formatDate = (date) => {
@@ -131,13 +106,13 @@ const formatDate = (date) => {
                                     </div>
 
                                     <div>
-                                        <InputLabel for="staff_id" value="Staff ID" />
+                                        <InputLabel for="usernames" value="Username" />
 
-                                        <TextInput id="staff_id" type="text" class="mt-1 block w-full"
-                                            v-model="form.staff_id" :readonly="user.deleted_at" required
-                                            autocomplete="staff_id" />
+                                        <TextInput id="usernames" type="text" class="mt-1 block w-full"
+                                            v-model="form.usernames" :readonly="user.deleted_at" required
+                                            autocomplete="usernames" />
 
-                                        <InputError class="mt-2" :message="form.errors.staff_id" />
+                                        <InputError class="mt-2" :message="form.errors.usernames" />
                                     </div>
 
                                     <div>
@@ -160,26 +135,6 @@ const formatDate = (date) => {
                                     </div>
 
                                     <div>
-                                        <InputLabel for="division" value="Division" />
-
-                                        <TextInput id="division" type="text" class="mt-1 block w-full"
-                                            v-model="form.division" autocomplete="division" />
-
-                                        <InputError class="mt-2" :message="form.errors.division" />
-                                    </div>
-
-                                    <div>
-                                        <InputLabel for="group_id" value="Contingent" />
-
-                                        <SelectInput id="group_id" class="mt-1 block w-full" v-model="form.group_id"
-                                            required :disabled="user.deleted_at">
-                                            <option v-for="group in groups" :value="group.id">{{ group.name }}</option>
-                                        </SelectInput>
-
-                                        <InputError class="mt-2" :message="form.errors.group_id" />
-                                    </div>
-
-                                    <div>
                                         <InputLabel for="role_id" value="Role" />
 
                                         <SelectInput id="role_id" class="mt-1 block w-full" v-model="form.role_id"
@@ -190,24 +145,9 @@ const formatDate = (date) => {
                                         <InputError class="mt-2" :message="form.errors.role_id" />
                                     </div>
 
-                                    <div>
-                                        <InputLabel for="facilitator_id" value="Facilitator" />
-
-                                        <SelectInput id="facilitator_id" class="mt-1 block w-full"
-                                            v-model="form.facilitator_id" :disabled="user.deleted_at">
-                                            <option v-for="facilitator in facilitators" :value="facilitator.id">{{
-                                                facilitator.name
-                                            }}</option>
-                                        </SelectInput>
-
-                                        <InputError class="mt-2" :message="form.errors.facilitator_id" />
-                                    </div>
-
                                     <div class="flex items-center gap-4">
                                         <PrimaryButton v-if="!user.deleted_at" :disabled="form.processing">Update
                                         </PrimaryButton>
-                                        <SecondaryButton v-if="!user.deleted_at" @click="openModal">Insert Points
-                                        </SecondaryButton>
                                         <SecondaryButton @click="reset">
                                             Reset Password
                                         </SecondaryButton>
@@ -223,126 +163,6 @@ const formatDate = (date) => {
             </div>
         </div>
 
-        <div class="pt-8 pb-2">
-            <div class="mt-4 md:mt-0 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <Accordion>
-                        <template v-slot:title>
-                            <span class="font-semibold text-lg my-2">User Awards</span>
-                        </template>
-                        <template v-slot:content>
-                            <header>
-                                <p class="mt-1 text-sm text-gray-600">
-                                    View user awards.
-                                </p>
-                            </header>
-                            <div class="flex flex-col">
-                                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                        <div class="overflow-hidden">
-                                            <table class="min-w-full">
-                                                <thead class="bg-white border-b border-t">
-                                                    <tr>
-                                                        <th scope="col"
-                                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                            Name
-                                                        </th>
-                                                        <th scope="col"
-                                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                            Points
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="award in user.awards"
-                                                        class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                        <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                            {{ award.name }}
-                                                        </td>
-                                                        <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                            {{ award.points }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr v-if="user.awards.length === 0">
-                                                        <td class="px-6 py-4 border-t text-center" colspan="2">
-                                                            No awards found.
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </Accordion>
-                </div>
-            </div>
-        </div>
-
-        <div class="pt-8 pb-2">
-            <div class="mt-4 md:mt-0 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <Accordion>
-                        <template v-slot:title>
-                            <span class="font-semibold text-lg my-2">Points History</span>
-                        </template>
-                        <template v-slot:content>
-                            <ol class="border-l-2 border-blue-600">
-                                <li v-for="history in user.histories">
-                                    <div class="flex flex-start items-center">
-                                        <div
-                                            class="bg-blue-600 w-4 h-4 flex items-center justify-center rounded-full -ml-2 mr-3 -mt-2">
-                                        </div>
-                                        <h4 class="text-gray-800 font-semibold text-md -mt-2">{{ history.points }}</h4>
-                                    </div>
-                                    <div class="ml-6 mb-1">
-                                        <Link v-if="history.link" :href="history.link"
-                                            class="underline text-blue-600 hover:text-blue-700 focus:text-blue-800 duration-300 transition ease-in-out text-sm">
-                                        {{ formatDate(history.created_at) }}
-                                        </Link>
-                                        <span v-if="!history.link"
-                                            class="text-blue-600 hover:text-blue-700 focus:text-blue-800 duration-300 transition ease-in-out text-sm">
-                                            {{ formatDate(history.created_at) }}
-                                        </span>
-                                        <p class="text-gray-700 mt-2 mb-4">{{ history.remark }}</p>
-                                    </div>
-                                </li>
-                            </ol>
-                        </template>
-                    </Accordion>
-                </div>
-            </div>
-        </div>
     </AuthenticatedLayout>
 
-    <Modal :show="showModal" @close="closeModal">
-        <div class="p-6">
-            <h2 class="text-lg text-center font-medium text-gray-900 mb-2">
-                Update Points
-            </h2>
-
-            <div class="flex justify-center" id="qr-code">
-                <form class="mt-6 space-y-6">
-                    <div>
-                        <InputLabel for="points" value='Points' />
-
-                        <TextInput id="points" type="number" class="mt-1 block w-full" v-model="pointsForm.points"
-                            required autocomplete="points" />
-
-                        <InputError class="mt-2" :message="pointsForm.errors.points" />
-                    </div>
-
-                    <div class="flex items-center gap-4">
-                        <PrimaryButton v-if="!user.deleted_at" :disabled="pointsForm.processing" @click="insertPoints">
-                            Save
-                        </PrimaryButton>
-                        <SecondaryButton @click="closeModal">
-                            Cancel
-                        </SecondaryButton>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </Modal>
 </template>

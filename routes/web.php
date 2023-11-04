@@ -29,10 +29,7 @@ use App\Http\Controllers\LuckyDrawController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'leaderboards' => Group::orderBy('points', 'desc')->with('awards')->limit(3)->get(),
-        'groups' => Group::orderBy('points', 'desc')->get(),
-    ]);
+    return Inertia::render('Welcome');
 })->name('welcome');
 
 Route::get('/lucky-draw', [LuckyDrawController::class, 'create'])->name('draws.create');

@@ -17,6 +17,7 @@ class Meeting extends Model
         'description',
         'start_at',
         'end_at',
+        'ahli',
     ];
 
     protected $casts = [

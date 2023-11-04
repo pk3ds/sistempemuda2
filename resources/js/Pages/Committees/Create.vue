@@ -13,10 +13,9 @@ function back() {
 
 const form = useForm({
     name: "",
-    staff_id: "",
+    username: "",
     email: "",
     phone: "",
-    division: "",
 });
 </script>
 
@@ -49,12 +48,12 @@ const form = useForm({
                             </div>
 
                             <div>
-                                <InputLabel for="staff_id" value="Staff ID" />
+                                <InputLabel for="username" value="Username" />
 
-                                <TextInput id="staff_id" type="text" class="mt-1 block w-full" v-model="form.staff_id"
-                                    autocomplete="staff_id" />
+                                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username"
+                                    autocomplete="username" />
 
-                                <InputError class="mt-2" :message="form.errors.staff_id" />
+                                <InputError class="mt-2" :message="form.errors.username" />
                             </div>
 
                             <div>
@@ -73,15 +72,6 @@ const form = useForm({
                                     required autocomplete="phone" />
 
                                 <InputError class="mt-2" :message="form.errors.phone" />
-                            </div>
-
-                            <div>
-                                <InputLabel for="division" value="Division" />
-
-                                <TextInput id="division" type="text" class="mt-1 block w-full" v-model="form.division"
-                                    autocomplete="division" />
-
-                                <InputError class="mt-2" :message="form.errors.division" />
                             </div>
 
                             <div class="flex items-center gap-4">

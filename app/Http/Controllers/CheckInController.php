@@ -8,6 +8,7 @@ use App\Models\CheckIn;
 use App\Models\History;
 use App\Models\Meeting;
 use App\Models\Score;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,7 @@ class CheckInController extends Controller
      * @param  \App\Models\Meeting  $meeting
      * @return \Illuminate\Http\Response
      */
-    public function store(Meeting $meeting)
+    public function store(Meeting $meeting, Request $request)
     {
         DB::beginTransaction();
         if (strtotime(now()) > strtotime($meeting->end_at)) {
@@ -61,86 +62,23 @@ class CheckInController extends Controller
             return redirect()
                 ->back()
                 ->with([
-                    'status' => 'The session has finished. Please scan the QR code for the latest session link.',
-                    'error' => 'The session has finished',
-                ]);
-        } elseif (strtotime(now()) > strtotime($meeting->start_at . '+15 minutes')) {
-            // Late check in, 0 merit points
-            $points = 0;
+                    'status' => 'Harap maaf, sesi ini sudah tamat.',
+                    'error' => 'Sesi sudah tamat',
+                ]);  
+        } else {
             $flash = [
-                'status' => 'Check in successful! Sit back and enjoy the session.',
-                'warn' => 'The session has started for more than 15 minutes',
+                'status' => 'Terima kasih dan selamat datang ke sesi ini.',
+                'success' => 'Anda berjaya daftar ke sesi ini. Moga bermanfaat!',
             ];
-        } elseif (strtotime(now()) > strtotime($meeting->start_at)) {
-            // Normal check in, 10 merit points
-            $points = 10;
-            $flash = [
-                'status' => 'Check in successful! Sit back and enjoy the session.',
-                'warn' => 'The session has started less than 15 minutes ago',
-            ];
-        } elseif (strtotime(now()) > strtotime($meeting->start_at . '-15 minutes')) {
-            // Early check in, 100 merit points
-            $points = 100;
-            $flash = [
-                'status' => 'Check in successful! Sit back and enjoy the session.',
-                'success' => 'The session will start in 15 minutes',
-            ];
-        } elseif (strtotime(now()) > strtotime($meeting->start_at . '-1 hour')) {
-            // Early check in, 100 merit points
-            $points = 100;
-            $flash = [
-                'status' => 'Wow! You are here early. Sit back and wait for the session to start.',
-                'success' => 'The session will start in 1 hour',
-            ];
-        } elseif (strtotime(now()) < strtotime($meeting->start_at . '-61 minutes')) {
-            // Disable check in, future sessions
-            DB::rollBack();
-            return redirect()
-                ->back()
-                ->with([
-                    'status' => 'The session starts in more than an hour. Please scan the QR code for current session link.',
-                    'error' => 'The session starts in more than an hour',
-                ]);
         }
-
-        Auth::user()->points = Auth::user()->points + $points;
+        Auth::user()->no_ahli = $request->no_ahli;
         Auth::user()->save();
 
-        $userHistory = History::create([
-            'remark' => $points . ' points adjustment from check in to ' . $meeting->name,
-            'points' => Auth::user()->points,
+        $checkIn = CheckIn::create([
+            'user_id' => Auth::user()->id,
+            'meeting_id' => $meeting->id,
         ]);
-        Auth::user()
-            ->histories()
-            ->save($userHistory);
-
-        if (Auth::user()->group) {
-            Auth::user()->group->points = Auth::user()->group->points + $points;
-            Auth::user()->group->save();
-
-            $groupHistory = History::create([
-                'link' => env('APP_URL', 'localhost') . '/users/' . Auth::user()->id . '/edit',
-                'remark' => $points . ' points adjustment from ' . Auth::user()->name,
-                'points' => Auth::user()->group->points,
-            ]);
-            Auth::user()
-                ->group->histories()
-                ->save($groupHistory);
-
-            $checkIn = CheckIn::create([
-                'user_id' => Auth::user()->id,
-                'group_id' => Auth::user()->group->id,
-                'meeting_id' => $meeting->id,
-                'points' => $points,
-            ]);
-        } else {
-            $checkIn = CheckIn::create([
-                'user_id' => Auth::user()->id,
-                'meeting_id' => $meeting->id,
-                'points' => $points,
-            ]);
-        }
-
+        
         DB::commit();
         return redirect()
             ->route('checkins.show', ['meeting' => $meeting, 'checkIn' => $checkIn])

@@ -31,43 +31,43 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
         $out->writeln($request);
-        $groups = Group::all()->loadCount('users');
-        $groupId = $groups->sortBy('users_count')->first()->id;
-        // $staffId = strtoupper($request->get('staff_id'));
+        $username = $request->get('username');
+        $phone = $request->get('phone');
+        $phone = str_replace(' ', '-', $phone);
+        $phone = preg_replace('/[^A-Za-z0-9\-]/', '', $phone);
 
         $request->validate([
-            // 'staff_id' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users',
             'name' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:' . User::class,
+            'email' => 'required|string|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'ic_number' => 'nullable|string|min:12',
+            'phone' => 'required|string|min:11'
         ]);
 
         $user = User::create([
-            // 'staff_id' => $staffId,
+            'username' => $username,
             'name' => $request->name,
-            'phone' => $request->phone,
-            // 'email' => $request->email,
-            'division' => $request->division,
+            'phone' => $phone,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
-            'group_id' => $groupId,
+            'ic_number' => $request->ic_number,
+            'alamat' => $request->alamat,
+            'no_ahli' => $request->no_ahli,
             'is_active' => true,
             'activated_at' => now(),
         ])->assignRole('User');
-
-        $history = History::create([
-            'remark' => 'User default',
-            'points' => 0,
-        ]);
-        $user->histories()->save($history);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return Inertia::location('/dashboard');
+        return redirect()->intended(RouteServiceProvider::HOME);
+
+        // return Inertia::location('/dashboard');
     }
 }
