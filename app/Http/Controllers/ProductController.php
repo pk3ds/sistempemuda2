@@ -20,7 +20,7 @@ class ProductController extends Controller
         return Inertia::render('Products/Index', [
             'filters' => Request::all('search'),
             'products' => Product::select('*')
-            ->orderBy('created_at')
+            ->orderByDesc('created_at')
             ->filter(Request::only('search'))
             ->paginate(5)
             ->withQueryString(),
