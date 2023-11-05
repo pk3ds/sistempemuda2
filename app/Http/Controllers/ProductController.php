@@ -104,11 +104,11 @@ class ProductController extends Controller
             'stock_status' => 'required|in:inStock,outOfStock',
             'total_stock' => 'numeric',
         ]);
-        
-        $product->update($validated);
+
+        $product->update(Request::only('name', 'price', 'image', 'description', 'stock_status', 'total_stock'));
 
         return redirect()
-            ->back()
+            ->route('products.index')
             ->with('success', 'Product "'. $product->name . ' "updated');
     }
 
