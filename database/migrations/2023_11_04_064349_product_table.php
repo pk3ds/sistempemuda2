@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('user_id')->constrained();
+            $table->integer('total_stock')->default(0);
+            $table->enum('stock_status', ['inStock', 'outOfStock']);
             $table->timestamps();
             $table->softDeletes();
         });

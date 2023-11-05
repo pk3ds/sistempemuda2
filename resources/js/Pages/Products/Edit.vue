@@ -25,6 +25,8 @@ const form = useForm({
     price: props.product.price,
     description: props.product.description,
     image: props.product.image,
+    stock_status: props.product.stock_status,
+    total_stock: props.product.total_stock,
 });
 </script>
 
@@ -108,6 +110,26 @@ const form = useForm({
                                         </TextInput>
 
                                         <InputError class="mt-2" :message="form.errors.image" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel for="stock_status" value="Stock Status" />
+
+                                        <TextInput id="stock_status" type="text" class="mt-1 block w-full" v-model="form.stock_status"
+                                            :disabled="product.deleted_at">
+                                        </TextInput>
+
+                                        <InputError class="mt-2" :message="form.errors.stock_status" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel for="total_stock" value="Total Stock" />
+
+                                        <TextInput id="total_stock" type="text" class="mt-1 block w-full" v-model="form.total_stock"
+                                            :disabled="product.deleted_at">
+                                        </TextInput>
+
+                                        <InputError class="mt-2" :message="form.errors.total_stock" />
                                     </div>
 
                                     <div class="flex items-center gap-4">

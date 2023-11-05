@@ -49,9 +49,16 @@ class ProductController extends Controller
             'uuid' => Str::uuid()->toString(),
             'user_id' => Auth::user()->id
         ]);
+        
+        Request::validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock_status' => 'required|in:inStock,outOfStock',
+            'total_stock' => 'numeric',
+        ]);
         // dd(Request::only('uuid', 'name', 'price', 'iamge', 'description', 'user_id'));
         // $product = Request::only('uuid', 'name', 'price', 'image', 'description', 'user_id');
-        $product = Product::create(Request::only('uuid', 'name', 'price', 'image', 'description', 'user_id'));
+        $product = Product::create(Request::only('uuid', 'name', 'price', 'image', 'description', 'user_id', 'stock_status', 'total_stock'));
 
         return redirect()
             ->route('products.index')
@@ -91,7 +98,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->update(Request::only('name', 'price', 'image', 'description'));
+        $product->update(Request::only('name', 'price', 'image', 'description', 'stock_status', 'total_stock'));
 
         return redirect()
             ->back()

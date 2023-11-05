@@ -46,6 +46,12 @@ export default {
             if (confirm('Are you sure you want to delete "' + item.name + ' (' + item.uuid + ')"?'))
                 this.$inertia.delete(route('products.destroy', item.id));
         },
+        referStockStatus(stock_status) {
+            if (stock_status === 'inStock') {
+                return 'In Stock';
+            } else 
+                return 'Out of Stock';
+        }
     },
 };
 </script>
@@ -84,6 +90,18 @@ export default {
                                                     </th>
                                                     <th scope="col"
                                                         class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                                        Stock Status
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                                        Available Stock
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                                        Total Stock
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                         Action
                                                     </th>
                                                 </tr>
@@ -95,7 +113,16 @@ export default {
                                                         <Link :href="route('products.edit', product)">{{ product.name }}</Link>
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
-                                                        {{ product.price }}
+                                                        RM {{ product.price }}
+                                                    </td>
+                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
+                                                        {{ referStockStatus(product.stock_status) }}
+                                                    </td>
+                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
+                                                        {{ product.total_stock - 0 }}
+                                                    </td>
+                                                    <td class="text-sm text-gray-900 font-light px-6 py-4">
+                                                        {{ product.total_stock }}
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4">
                                                         <SecondaryButton class="mx-1">

@@ -18,6 +18,8 @@ class Product extends Model
         'image',
         'user_id',
         'description',
+        'stock_status',
+        'total_stock',
     ];
 
     public function scopeFilter($query, array $filters)

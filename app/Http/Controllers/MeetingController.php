@@ -19,7 +19,7 @@ class MeetingController extends Controller
         return Inertia::render('Meetings/Index', [
             'filters' => Request::all('search'),
             'meetings' => Meeting::select('*')
-                ->orderBy('start_at')
+                ->orderByDesc('created_at')
                 ->filter(Request::only('search'))
                 ->paginate(5)
                 ->withQueryString(),

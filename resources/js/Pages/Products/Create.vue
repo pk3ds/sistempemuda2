@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -12,11 +13,18 @@ function back() {
     window.history.back();
 };
 
+const options = ref([
+    { text: 'In Stock', value: 'inStock' },
+    { text: 'Out of Stock', value: 'outOfStock' }
+])
+
 const form = useForm({
     name: "",
     price: "",
     description: "",
     image: "",
+    stock_status: ref("inStock"),
+    total_stock: "",
 });
 </script>
 
@@ -71,6 +79,26 @@ const form = useForm({
                                 <TextInput id="image" type="text" class="mt-1 block w-full" v-model="form.image" />
 
                                 <InputError class="mt-2" :message="form.errors.image" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="stock_status" value="Stock Status" />
+
+                                <SelectInput id="stock_status" class="mt-1 block w-full" v-model="form.stock_status" required>
+                                    <option v-for="option in options" :value="option.value">
+                                        {{ option.text }}
+                                    </option>
+                                </SelectInput>
+
+                                <InputError class="mt-2" :message="form.errors.stock_status" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="total_stock" value="Total Stock" />
+
+                                <TextInput id="total_stock" type="text" class="mt-1 block w-full" v-model="form.total_stock" />
+
+                                <InputError class="mt-2" :message="form.errors.total_stock" />
                             </div>
 
                             <div class="flex items-center gap-4">
