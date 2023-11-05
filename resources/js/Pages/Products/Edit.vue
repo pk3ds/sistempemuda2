@@ -20,6 +20,11 @@ const props = defineProps({
     product: Object,
 });
 
+const options = ref([
+    { text: 'In Stock', value: 'inStock' },
+    { text: 'Out of Stock', value: 'outOfStock' }
+])
+
 const form = useForm({
     name: props.product.name,
     price: props.product.price,
@@ -115,9 +120,11 @@ const form = useForm({
                                     <div>
                                         <InputLabel for="stock_status" value="Stock Status" />
 
-                                        <TextInput id="stock_status" type="text" class="mt-1 block w-full" v-model="form.stock_status"
-                                            :disabled="product.deleted_at">
-                                        </TextInput>
+                                        <SelectInput id="stock_status" class="mt-1 block w-full" v-model="form.stock_status" required>
+                                            <option v-for="option in options" :value="option.value">
+                                                {{ option.text }}
+                                            </option>
+                                        </SelectInput>
 
                                         <InputError class="mt-2" :message="form.errors.stock_status" />
                                     </div>

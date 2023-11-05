@@ -98,7 +98,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->update(Request::only('name', 'price', 'image', 'description', 'stock_status', 'total_stock'));
+        $validated = Request::validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock_status' => 'required|in:inStock,outOfStock',
+            'total_stock' => 'numeric',
+        ]);
+        
+        $product->update($validated);
 
         return redirect()
             ->back()
