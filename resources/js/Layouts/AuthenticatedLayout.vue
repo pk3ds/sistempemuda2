@@ -85,10 +85,6 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink v-if="!$page.props.auth.can['view navs']" :href="route('dashboard')">
                                             Dashboard
                                         </DropdownLink>
-                                        <DropdownLink v-if="!$page.props.auth.can['view navs']"
-                                            :href="route('draws.winners')">
-                                            Lucky Draw
-                                        </DropdownLink>
                                         <DropdownLink :href="route('logout')"
                                             method="post" as="button">
                                             Logout
@@ -124,9 +120,6 @@ const showingNavigationDropdown = ref(false);
                                         </DropdownLink>
                                         <DropdownLink :href="route('register')">
                                             Register
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('draws.winners')">
-                                            Lucky Draw
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -200,9 +193,6 @@ const showingNavigationDropdown = ref(false);
                            <ResponsiveNavLink v-if="!$page.props.auth.can['view navs']" :href="route('dashboard')">
                                 Dashboard
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('draws.winners')">
-                                Lucky Draw
-                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('profile.edit')">
                                 Profile
                             </ResponsiveNavLink>
@@ -227,9 +217,6 @@ const showingNavigationDropdown = ref(false);
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink :href="route('register')">
                                     Register
-                                </ResponsiveNavLink>
-                                <ResponsiveNavLink :href="route('draws.winners')">
-                                    Lucky Draw
                                 </ResponsiveNavLink>
                             </div>
                         </div>
