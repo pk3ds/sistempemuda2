@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Request;
+// use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DonationController extends Controller
@@ -41,20 +44,33 @@ class DonationController extends Controller
      * @param  \App\Http\Requests\StoreDonationRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDonationRequest $request)
+    public function store(Request $request)
     {
         Request::validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'target' => 'required|float|min:1'
+            'target' => 'required|decimal:2|min:1'
         ]);
-
+        
         Request::merge(['uuid' => Str::uuid()->toString()]);
         $donation = Donation::create(Request::only('uuid', 'name', 'description', 'target'));
-        
         return redirect()
             ->route('donations')
             ->with('success', 'Donation "' . $donation->name . ' "created');
+        // dd($validated);
+        
+        // Request::validate([
+        //     'name' => 'required|string|max:255',
+        //     'description' => 'nullable|string|max:255',
+        //     'target' => 'required|decimal:2|min:1'
+        // ]);
+
+        // $donations = Request::merge(['uuid' => Str::uuid()->toString()]);
+        // dd($donations);
+        // $donation = Donation::create(Request::only('uuid', 'name', 'description', 'target'));
+        // return redirect()
+        //     ->route('donations')
+        //     ->with('success', 'Donation "' . $donation->name . ' "created');
     }
 
     /**
@@ -88,9 +104,20 @@ class DonationController extends Controller
      * @param  \App\Models\Donation  $donation
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateDonationRequest $request, Donation $donation)
+    public function update(Request $request, Donation $donation)
     {
-        //
+        $validated = Request::validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255|',
+            'target' => 'required|decimal:2|min:1'
+        ]);
+        
+        $donation->update($validated);
+
+
+        return redirect()
+            ->back()
+            ->with('success', 'Donation "' . $donation->name . '" updated');
     }
 
     /**

@@ -63,7 +63,7 @@ const form = useForm({
                             <div>
                                 <InputLabel for="target" value="Target" />
 
-                                <TextInput id="target" type="text" class="mt-1 block w-full" v-model="form.target"
+                                <TextInput id="target" type="number" class="mt-1 block w-full" v-model="form.target"
                                     autocomplete="target" />
 
                                 <InputError class="mt-2" :message="form.errors.target" />
