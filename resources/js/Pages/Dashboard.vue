@@ -50,5 +50,15 @@ const props = defineProps({
                 </section>
             </div>
         </div>
+        <div class="pt-8 pb-2">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- <div class="container bg-primary">
+                    
+                </div> -->
+                <!-- <h2>
+                    test
+                </h2> -->
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>
