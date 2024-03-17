@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DonationController;
 use Inertia\Inertia;
 use App\Models\Award;
 use App\Models\Group;
@@ -59,6 +60,15 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::delete('/contingents/{group}/delete', [GroupController::class, 'destroy'])->name('groups.destroy');
     Route::post('/contingents/{group}/upload', [GroupController::class, 'upload'])->name('groups.upload');
     Route::put('/contingents/{group}/points', [GroupController::class, 'points'])->name('groups.points');
+    
+    Route::get('/donations', [DonationController::class, 'index'])->name('donations');
+    Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
+    Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
+    Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
+    Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
+    Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
+    Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
+    Route::put('/donations/{donation}/points', [DonationController::class, 'points'])->name('donations.points');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
