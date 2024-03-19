@@ -51,7 +51,7 @@ const formatDate = (date) => {
             </div>
         </div>
         <!-- donation's cards -->
-        <div class="pt-8 pb-2">
+        <div class="pt-5 pb-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <a href="#">
