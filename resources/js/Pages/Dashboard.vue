@@ -51,27 +51,14 @@ const formatDate = (date) => {
                 </section>
             </div>
         </div>
+        
         <!-- donation's cards -->
         <div class="flex flex-row px-9">
             <div class="basis-1/3"><DonationCard></DonationCard></div>
             <div class="basis-1/3"><DonationCard></DonationCard></div>
             <div class="basis-1/3"><DonationCard></DonationCard></div>
         </div>
-        <div class="pt-5 pb-2">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="grid grid-rows-2 grid-flow-col gap-1">
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                    <DonationCard></DonationCard>
-                </div>
-            </div>
-        </div>
+
         <div class="pt-8 pb-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
