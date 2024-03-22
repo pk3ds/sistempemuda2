@@ -19,10 +19,6 @@ const props = defineProps({
     checkins: Object,
     donations: Object,
 });
-
-function onclick () {
-    console.log(props.donations);
-}
 </script>
 
 <style>
@@ -57,15 +53,16 @@ function onclick () {
         </div>
         
         <!-- donation's cards -->
-        {{ donations }}
         <div class="flex flex-row px-9">
             <div v-for="donation in donations">
-                {{ donation.name }}
+                <div class="pt-5 pb-2">
+                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                            <div class="basis-1/3"><DonationCard :donation="donation" /></div>
+                        </div>
+                    </div>
             </div>
-            <div class="basis-1/3"><DonationCard /></div>
-            <div class="basis-1/3"><DonationCard /></div>
-            <div class="basis-1/3"><DonationCard /></div>
+            <!-- <div class="basis-1/3"><DonationCard /></div>
+            <div class="basis-1/3"><DonationCard /></div> -->
         </div>
-        <button @click="onclick">Here</button>
     </AuthenticatedLayout>
 </template>

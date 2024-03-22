@@ -20,9 +20,7 @@ function reset() {
     axios
         .put(route('users.reset', props.user))
         .then((response) => {
-            console.log(response.data);
         }).catch((error) => {
-            console.log(error.response.status);
         });
 };
 

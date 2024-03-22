@@ -46,7 +46,6 @@ Route::middleware('auth', 'role:Admin|Committee')->group(function () {
 
 
 Route::get('/dashboard', function () {
-    dd(Donation::where('user_id', Auth::user()->id)->with('uploaded_file')->get());
     return Inertia::render('Dashboard', [
         'checkins' => CheckIn::where('user_id', Auth::user()->id)->orderBy('created_at')->with('meeting')->get(),
         'donations' => Donation::where('user_id', Auth::user()->id)->with('uploaded_file')->get(),

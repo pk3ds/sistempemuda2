@@ -25,7 +25,6 @@ const form = useForm({
 
 function onChange(e) {
     if (e.target.files) {
-        console.log(e, e.target.files[0]);
         form.file_upload = e.target.files[0];
     }
 }
