@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('donations', function (Blueprint $table) {
-            $table->id();
-            $table->string('uuid')->unique();
-            $table->string('name');
-            $table->string('description');
-            $table->float('target');
+        Schema::create('uploaded_files', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->text('filename');
+            $table->text('original_name');
+            $table->text('uploadFor');
+            $table->text('path');
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('donations');
+        Schema::dropIfExists('uploaded_files');
     }
 };

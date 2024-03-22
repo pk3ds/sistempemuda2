@@ -15,6 +15,7 @@ class Donation extends Model
         'description',
         'target',
         'user_id',
+        'uploaded_files_id',
     ];
 
     public function scopeFilter($query, array $filters)

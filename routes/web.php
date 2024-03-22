@@ -68,7 +68,6 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
     Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
-    Route::put('/donations/{donation}/points', [DonationController::class, 'points'])->name('donations.points');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

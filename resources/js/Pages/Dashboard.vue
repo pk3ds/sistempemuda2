@@ -54,9 +54,9 @@ const formatDate = (date) => {
         
         <!-- donation's cards -->
         <div class="flex flex-row px-9">
-            <div class="basis-1/3"><DonationCard></DonationCard></div>
-            <div class="basis-1/3"><DonationCard></DonationCard></div>
-            <div class="basis-1/3"><DonationCard></DonationCard></div>
+            <div class="basis-1/3"><DonationCard /></div>
+            <div class="basis-1/3"><DonationCard /></div>
+            <div class="basis-1/3"><DonationCard /></div>
         </div>
 
         <div class="pt-8 pb-2">
