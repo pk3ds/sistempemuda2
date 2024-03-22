@@ -81,9 +81,10 @@ class DonationController extends Controller
         ]);
         $request->merge([
             'uuid' => Str::uuid()->toString(),
-            'uploaded_files_id' => $createUploadedFile->id
+            'uploaded_files_id' => $createUploadedFile->id,
+            'user_id' => Auth::user()->id
         ]);
-        $donation = Donation::create($request->only('uuid', 'name', 'description', 'target', 'uploaded_files_id'));
+        $donation = Donation::create($request->only('uuid', 'name', 'description', 'target', 'uploaded_files_id', 'user_id'));
         return redirect()
             ->route('donations')
             ->with('success', 'Donation "' . $donation->name . ' "created');

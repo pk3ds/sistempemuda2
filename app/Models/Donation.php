@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\UploadedFile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +27,15 @@ class Donation extends Model
                 $query->where('name', 'like', '%' . $search . '%');
             });
         });
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function uploaded_file()
+    {
+        return $this->belongsTo(UploadedFile::class, 'uploaded_files_id');
     }
 }

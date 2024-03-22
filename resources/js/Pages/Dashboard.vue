@@ -15,10 +15,14 @@ const formatDate = (date) => {
         .format(new Date(date));
 }
 
-// const props = defineProps({
-//     checkins: Object,
-//     awards: Object,
-// });
+const props = defineProps({
+    checkins: Object,
+    donations: Object,
+});
+
+function onclick () {
+    console.log(props.donations);
+}
 </script>
 
 <style>
@@ -53,28 +57,15 @@ const formatDate = (date) => {
         </div>
         
         <!-- donation's cards -->
+        {{ donations }}
         <div class="flex flex-row px-9">
-            <div class="basis-1/3"><DonationCard /></div>
-            <div class="basis-1/3"><DonationCard /></div>
-            <div class="basis-1/3"><DonationCard /></div>
-        </div>
-
-        <div class="pt-8 pb-2">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-purple-600 h-2.5 rounded-full dark:bg-purple-500" style="width: 45%"></div>
-                </div>
-                <br>
-                
-                <br>
-
-                <!-- <div class="container bg-primary">
-                    
-                </div> -->
-                <!-- <h2>
-                    test
-                </h2> -->
+            <div v-for="donation in donations">
+                {{ donation.name }}
             </div>
+            <div class="basis-1/3"><DonationCard /></div>
+            <div class="basis-1/3"><DonationCard /></div>
+            <div class="basis-1/3"><DonationCard /></div>
         </div>
+        <button @click="onclick">Here</button>
     </AuthenticatedLayout>
 </template>

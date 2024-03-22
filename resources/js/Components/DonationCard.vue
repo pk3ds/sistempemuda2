@@ -7,7 +7,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <a href="#">
-                        <img class="rounded-t-lg" src="/assets/images/bg-06.jpg" alt="" />
+                        <img class="rounded-t-lg" src="/storage/uploads/EjmEybzd0g3YUqtKrDQRUbYyxqMhOby4mdtGagAI.png" alt="" />
                     </a>
                     <div class="p-5">
                         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Noteworthy technology acquisitions 2021</h5>
