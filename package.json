@@ -23,7 +23,7 @@
         "@vuepic/vue-datepicker": "^3.6.4",
         "qrcode-vue3": "^1.4.17",
         "save-html-as-image": "^1.7.1",
-        "swiper": "^11.0.7",
+        "swiper": "^11.1.0",
         "xlsx": "^0.18.5"
     }
 }
