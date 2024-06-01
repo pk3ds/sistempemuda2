@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\WhatsappController;
 use App\Models\Donation;
 use Inertia\Inertia;
 use App\Models\Award;
@@ -69,6 +70,14 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
     Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
+    
+    Route::get('/whatsapp', [WhatsappController::class, 'index'])->name('whatsapp');
+    Route::get('/whatsapp/create', [WhatsappController::class, 'create'])->name('whatsapp.create');
+    Route::post('/whatsapp', [WhatsappController::class, 'store'])->name('whatsapp.store');
+    // Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
+    // Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
+    // Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
+    // Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

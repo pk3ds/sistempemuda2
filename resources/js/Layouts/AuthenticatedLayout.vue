@@ -46,6 +46,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
                                     Donations
                                 </NavLink>
+                                <NavLink :href="route('whatsapp')" :active="route().current('whatsapp')">
+                                    Whatsapp Blasting
+                                </NavLink>
                             </div>
 
                             <!-- Navigation Links User -->
@@ -176,6 +179,9 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
                             Donations
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('whatsapp')" :active="route().current('whatsapp')">
+                            Whatsapp Blasting
                         </ResponsiveNavLink>
                     </div>
 
