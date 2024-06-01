@@ -43,7 +43,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('committees')" :active="route().current('committees')">
                                     Committees
                                 </NavLink>
-                                <NavLink :href="route('donations')" :active="route().current('donations')">
+                                <NavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
                                     Donations
                                 </NavLink>
                             </div>
@@ -174,7 +174,7 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('committees')" :active="route().current('committees')">
                             Committees
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('donations')" :active="route().current('donations')">
+                        <ResponsiveNavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
                             Donations
                         </ResponsiveNavLink>
                     </div>
