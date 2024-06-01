@@ -56,7 +56,7 @@ const props = defineProps({
         </div>
         
         <!-- Swiper -->
-        <div class="px-20 py-10">
+        <div class="px-20 py-10" v-if="false">
             <h5>Donations</h5>
             <div class="bg-white container rounded shadow">
                 <div class="px-2 py-2">
