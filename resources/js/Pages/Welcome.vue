@@ -36,7 +36,7 @@ const props = defineProps({
     <AuthenticatedLayout>
         <div class="pt-8">
             <div class="max-w-7xl mx-auto rounded-lg">
-                <DonationCardVue/>
+                <DonationCardVue v-if="false"/>
             </div>
         </div>
     </AuthenticatedLayout>
