@@ -95,6 +95,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        dd($user);
         return Inertia::render('Users/Edit', [
             'user' => $user->load('roles'),
             'roles' => Role::all(),
