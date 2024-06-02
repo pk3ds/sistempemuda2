@@ -37,6 +37,7 @@ class WhatsappController extends Controller
     public function store(Request $request)
     {
         $message = $request->message;
+        $link = env('WHATSAPP_API');
         $phones = array(
             '601110100119@s.whatsapp.net',
             '60125414160@s.whatsapp.net',
@@ -58,14 +59,42 @@ class WhatsappController extends Controller
         //     '120363162862991169@g.us',
         //     '120363165706812773@g.us',
         // );
-        $apiResponse = [];
-        foreach ($phones as $phone) {
-            $api = Http::post('http://192.168.1.110:3000/send/message', [
-                'message' => $message,
-                'phone' => $phone,
-            ]);
-            $apiResponse[] = $api->json();
+
+        $file = $request->file('file_upload');
+        if ($request->option === 'message') {
+            foreach ($phones as $phone) {
+                $api = Http::post($link . '/send/message', [
+                    'message' => $message,
+                    'phone' => $phone,
+                ]);
+                $apiResponse[] = $api->json();
+            }
+        } else if ($request->option === 'photo') {
+            foreach ($phones as $phone) {
+                $api = Http::attach('image', file_get_contents($file), 'image.png')
+                    ->post($link . '/send/image', [
+                        'caption' => $message,
+                        'phone' => $phone,
+                        'view_once' => false,
+                        'compress' => false,
+                ]);
+                $apiResponse[] = $api->json();
+            }
+        } else if ($request->option === 'video') {
+            foreach ($phones as $phone) {
+                $api = Http::attach('image', file_get_contents($file), 'image.png')
+                    ->post($link . '/send/image', [
+                        'caption' => $message,
+                        'phone' => $phone,
+                        'view_once' => false,
+                        'compress' => false,
+                ]);
+                $apiResponse[] = $api->json();
+            }
         }
+        return redirect()
+            ->route('whatsapp.create')
+            ->with('success', 'Message sent successfully', $api);
     }
 
     /**

@@ -9,6 +9,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useForm, Head } from '@inertiajs/inertia-vue3';
 import '@vuepic/vue-datepicker/dist/main.css';
 import TextArea from '../../Components/TextArea.vue';
+import FileInput from '@/Components/FileInput.vue';
 
 function back() {
     window.history.back();
@@ -17,7 +18,17 @@ function back() {
 const form = useForm({
     message: "",
     option: "",
+    file_upload: [],
+    caption: "",
+    view_once: false,
+    compress: false,
 });
+
+function onChange(e) {
+    if (e.target.files) {
+        form.file_upload = e.target.files[0];
+    }
+}
 </script>
 
 <template>
@@ -57,7 +68,7 @@ const form = useForm({
                             </p>
                         </header>
 
-                        <form @submit.prevent="form.post(route('whatsapp.store'))" class="mt-6 space-y-6">
+                        <form @submit.prevent="form.post(route('whatsapp.store'))" enctype="multipart/form-data" class="mt-6 space-y-6" @change="onChange">
                             <div>
                                 <InputLabel for="option" value="Blasting Option" />
 
@@ -67,19 +78,47 @@ const form = useForm({
                                 <SelectInput id="option" class="mt-1 block w-full" v-model="form.option" required>
                                     <option value="message">Message</option>
                                     <option value="photo">Photo</option>
-                                    <option value="video">Video</option>
+                                    <!-- <option value="video">Video</option> -->
                                 </SelectInput>
 
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
 
-                            <div>
+                            <div v-if="form.option === 'message'">
                                 <InputLabel for="message" value="Message" />
 
                                 <TextArea id="message" type="text" class="mt-1 block w-full"
                                     v-model="form.message" required />
 
                                 <InputError class="mt-2" :message="form.errors.message" />
+                            </div>
+
+                            <div v-if="['photo', 'video'].indexOf(form.option) > -1">
+                                <div>
+                                    <InputLabel for="message" value="Message" />
+    
+                                    <TextArea id="message" type="text" class="mt-1 block w-full"
+                                        v-model="form.message" required />
+    
+                                    <InputError class="mt-2" :message="form.errors.message" />
+                                </div>
+                                
+                                <div v-if="form.option === 'photo'" class="pt-5">
+                                    <InputLabel for="file_upload" value="Image" />
+    
+                                    <FileInput id="file_upload" type="file" class="mt-1 block w-full" accept="image/*" />
+    
+                                    <InputError class="mt-2" :file_upload="form.errors.file_upload" />
+                                </div>
+
+                                <div v-if="form.option === 'video'" class="pt-5">
+                                    <InputLabel for="file_upload" value="Video" />
+    
+                                    <TextInput id="file_upload" type="file" class="mt-1 block w-full"
+                                        v-model="form.file_upload" accept="video/*" />
+    
+                                    <InputError class="mt-2" :file_upload="form.errors.file_upload" />
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-4">
