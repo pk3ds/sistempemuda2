@@ -38,27 +38,8 @@ class WhatsappController extends Controller
     {
         $message = $request->message;
         $link = env('WHATSAPP_API');
-        $phones = array(
-            '601110100119@s.whatsapp.net',
-            '60125414160@s.whatsapp.net',
-        );
-        // $phones = array(
-        //     '60139918200-1629602413@g.us',
-        //     '120363143420852936@g.us',
-        //     '120363123118401353@g.us',
-        //     '60125426750-1415003941@g.us',
-        //     '60132662976-1584994757@g.us',
-        //     '60199804007-1361451982@g.us',
-        //     '601110857754-1536378649@g.us',
-        //     '60192975298-1629273143@g.us',
-        //     '60108484914-1475113037@g.us',
-        //     '60192975298-1380608799@g.us',
-        //     '601111912769-1631302624@g.us',
-        //     '120363040784124776@g.us',
-        //     '601133338302-1561389934@g.us',
-        //     '120363162862991169@g.us',
-        //     '120363165706812773@g.us',
-        // );
+        $phoneString = env('WHATSAPP_BLASTING');
+        $phones = explode(',', $phoneString);
 
         $file = $request->file('file_upload');
         if ($request->option === 'message') {
