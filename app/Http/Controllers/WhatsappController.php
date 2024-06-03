@@ -93,7 +93,7 @@ class WhatsappController extends Controller
             }
         }
         return redirect()
-            ->route('whatsapp.create')
+            ->route('whatsapp')
             ->with('success', 'Message sent successfully', $api);
     }
 
