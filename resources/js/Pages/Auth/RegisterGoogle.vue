@@ -21,7 +21,6 @@ const form = useForm({
 });
 
 const submit = () => {
-    console.log(props);
     form.phone = form.phone.replace(/[^0-9 ]/g, '');
     if (form.phone.substring(0,1) !== '6') {
         form.phone = '6' + form.phone;

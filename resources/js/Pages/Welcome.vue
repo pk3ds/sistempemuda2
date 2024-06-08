@@ -1,4 +1,5 @@
 <script setup>
+import DonationCardVue from "@/Components/DonationCard.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 
@@ -35,7 +36,7 @@ const props = defineProps({
     <AuthenticatedLayout>
         <div class="pt-8">
             <div class="max-w-7xl mx-auto rounded-lg">
-
+                <DonationCardVue v-if="false"/>
             </div>
         </div>
     </AuthenticatedLayout>

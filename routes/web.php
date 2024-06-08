@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\DonationController;
+use App\Http\Controllers\WhatsappController;
+use App\Models\Donation;
 use Inertia\Inertia;
 use App\Models\Award;
 use App\Models\Group;
@@ -46,7 +49,7 @@ Route::middleware('auth', 'role:Admin|Committee')->group(function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
         'checkins' => CheckIn::where('user_id', Auth::user()->id)->orderBy('created_at')->with('meeting')->get(),
-        'awards' => Auth::user()->awards,
+        'donations' => Donation::where('user_id', Auth::user()->id)->with('uploaded_file')->get(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -59,6 +62,22 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::delete('/contingents/{group}/delete', [GroupController::class, 'destroy'])->name('groups.destroy');
     Route::post('/contingents/{group}/upload', [GroupController::class, 'upload'])->name('groups.upload');
     Route::put('/contingents/{group}/points', [GroupController::class, 'points'])->name('groups.points');
+    
+    Route::get('/donations', [DonationController::class, 'index'])->name('donations');
+    Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
+    Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
+    Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
+    Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
+    Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
+    Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
+    
+    Route::get('/whatsapp', [WhatsappController::class, 'index'])->name('whatsapp');
+    Route::get('/whatsapp/create', [WhatsappController::class, 'create'])->name('whatsapp.create');
+    Route::post('/whatsapp', [WhatsappController::class, 'store'])->name('whatsapp.store');
+    // Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
+    // Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
+    // Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
+    // Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

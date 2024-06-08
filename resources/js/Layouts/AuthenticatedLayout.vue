@@ -43,8 +43,11 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('committees')" :active="route().current('committees')">
                                     Committees
                                 </NavLink>
-                                <NavLink :href="route('winners.index')" :active="route().current('winners.index')">
-                                    Winners
+                                <NavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
+                                    Donations
+                                </NavLink>
+                                <NavLink :href="route('whatsapp')" :active="route().current('whatsapp')">
+                                    Whatsapp Blasting
                                 </NavLink>
                             </div>
 
@@ -174,8 +177,11 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('committees')" :active="route().current('committees')">
                             Committees
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('winners.index')" :active="route().current('winners.index')">
-                            Winners
+                        <ResponsiveNavLink :href="route('donations')" :active="route().current('donations')" v-if="false">
+                            Donations
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('whatsapp')" :active="route().current('whatsapp')">
+                            Whatsapp Blasting
                         </ResponsiveNavLink>
                     </div>
 
