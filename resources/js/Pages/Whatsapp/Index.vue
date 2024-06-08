@@ -21,7 +21,8 @@ const form = useForm({
     file_upload: [],
     caption: "",
     view_once: false,
-    compress: false,
+    compress: true,
+    number: "",
 });
 
 function onChange(e) {
@@ -69,6 +70,18 @@ function onChange(e) {
                         </header>
 
                         <form @submit.prevent="form.post(route('whatsapp.store'))" enctype="multipart/form-data" class="mt-6 space-y-6" @change="onChange">
+                            <div>
+                                <InputLabel for="number" value="Blasting Number" />
+
+                                <SelectInput id="number" class="mt-1 block w-full" v-model="form.number" required>
+                                    <option value="penerangan" selected>Penerangan</option>
+                                    <option value="mfast">Mfast</option>
+                                    <!-- <option value="video">Video</option> -->
+                                </SelectInput>
+
+                                <InputError class="mt-2" :message="form.errors.name" />
+                            </div>
+                            
                             <div>
                                 <InputLabel for="option" value="Blasting Option" />
 
