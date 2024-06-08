@@ -75,9 +75,8 @@ class WhatsappController extends Controller
         $file = $request->file('file_upload');
         $fileName = $file->getClientOriginalName();
         $filePath = $file->store('uploads', 'public');
-        $file = public_path() . '\\storage\\' . $filePath;
-        $fileTest = storage_path($file);
-        dd($fileTest);
+        $shortenFilePath = substr($filePath, strpos($filePath, "/") + 1);
+        $file = public_path() . '\\storage\\uploads\\' . $shortenFilePath;
         foreach ($groups as $group) {
             $passObject['phone'] = $group['JID'];
             if ($checkCaption) {
