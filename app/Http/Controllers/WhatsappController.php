@@ -68,17 +68,18 @@ class WhatsappController extends Controller
         if (strtolower($data['code']) === 'success') {
             $groups = $data['results']['data'];
         }
-        $phone = '601110100119@s.whatsapp.net';
-        // $testObject = new \stdClass;
         $api = Http::post($link, $passObject);
         $checkCaption = isset($passObject['caption']);
-        $file = $request->file('file_upload');
-        $fileName = $file->getClientOriginalName();
-        $filePath = $file->store('uploads', 'public');
-        $shortenFilePath = substr($filePath, strpos($filePath, "/") + 1);
-        $file = public_path() . '//storage//' . $filePath;
-        foreach ($groups as $group) {
+        if ($request->file_upload) {
+            $file = $request->file('file_upload');
+            $filePath = $file->store('uploads', 'public');
+            $file = public_path() . '//storage//' . $filePath;
+        }
+        $totalGroups = count($groups);
+        foreach ($groups as $key=>$group) {
+            // uncomment this for the prod function
             $passObject['phone'] = $group['JID'];
+            // $passObject['phone'] = '601110100119@s.whatsapp.net';
             if ($checkCaption) {
                 $api = Http::attach('image', file_get_contents($file), 'image.png')
                     ->post($link, $passObject);
@@ -90,7 +91,7 @@ class WhatsappController extends Controller
         File::delete($file);
         return redirect()
             ->route('whatsapp')
-            ->with('success', 'Message sent successfully', $api);
+            ->with('success', 'Message sent successfully', $apiResponse);
     }
 
     /**
