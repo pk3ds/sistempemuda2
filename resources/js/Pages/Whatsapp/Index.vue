@@ -11,9 +11,23 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import TextArea from '../../Components/TextArea.vue';
 import FileInput from '@/Components/FileInput.vue';
 
+const props = defineProps({
+    whatsappNumber: Object,
+});
+
 function back() {
     window.history.back();
 };
+
+function onChange(e) {
+    if (e.target.files) {
+        form.file_upload = e.target.files[0];
+    }
+};
+
+function testLog() {
+    console.log(props.whatsappNumber);
+}
 
 const form = useForm({
     message: "",
@@ -24,12 +38,6 @@ const form = useForm({
     compress: true,
     number: "",
 });
-
-function onChange(e) {
-    if (e.target.files) {
-        form.file_upload = e.target.files[0];
-    }
-}
 </script>
 
 <template>
@@ -37,26 +45,6 @@ function onChange(e) {
     <Head title="Whatsapp Blasting" />
 
     <AuthenticatedLayout :auth="$page.props.auth">
-        <!-- <div class="pt-8 pb-2">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="lg:px-6 flex justify-between border-b pb-2">
-                            <h4 class="text-lg mt-2 mr-2">Whatsapp Blasting</h4>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                    <PrimaryButton>
-                                        <Link :href="route('whatsapp.store')">Send</Link>
-                                    </PrimaryButton>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         <div class="pt-8 pb-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -74,9 +62,9 @@ function onChange(e) {
                                 <InputLabel for="number" value="Blasting Number" />
 
                                 <SelectInput id="number" class="mt-1 block w-full" v-model="form.number" required>
-                                    <option value="penerangan" selected>Penerangan</option>
-                                    <option value="mfast">Mfast</option>
-                                    <!-- <option value="video">Video</option> -->
+                                    <option v-for="number in props.whatsappNumber" :disabled="number.first_whatsapp_batches?.isActive">
+                                        {{ number.name }} <span v-if="number.first_whatsapp_batches?.isActive"> - number blasting in progress</span>
+                                    </option>
                                 </SelectInput>
 
                                 <InputError class="mt-2" :message="form.errors.name" />
@@ -139,6 +127,9 @@ function onChange(e) {
                                 <SecondaryButton @click="back">
                                     Cancel
                                 </SecondaryButton>
+                                <button @click="testLog()">
+                                    test
+                                </button>
                             </div>
                         </form>
                     </section>
