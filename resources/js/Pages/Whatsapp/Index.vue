@@ -26,7 +26,36 @@ function onChange(e) {
 };
 
 function testLog() {
-    console.log(props.whatsappNumber);
+    console.log(props.whatsappNumber, form.array_number);
+}
+
+function assignPort(e) {
+    const index = e.target.value;
+    form.port = props.whatsappNumber[index-1].port;
+    console.log(props.whatsappNumber[index-1].name, props.whatsappNumber[index-1].port, form.port);
+}
+
+function editNumber(e) {
+    const value = e.target.value;
+    const findComma = value.indexOf(',');
+    let theArray = [];
+    if(findComma != -1){
+        theArray = value.split(',');
+    } else {
+        theArray = value.split(/\s+/);
+    }
+    for (let i = 0; i < theArray.length; i++) {
+        const element = theArray[i];
+        if (element.substring(0,1) === '0') {
+            theArray[i] = '6' + theArray[i];
+        } else if (element.substring(0,1) === '1') {
+            theArray[i] = '60' + theArray[i];
+        } else {
+            theArray[i] = theArray[i];
+        }
+    }
+    form.array_number = theArray;
+    console.log(value, theArray);
 }
 
 const form = useForm({
@@ -37,6 +66,8 @@ const form = useForm({
     view_once: false,
     compress: true,
     number: "",
+    port: "",
+    array_number: "",
 });
 </script>
 
@@ -61,13 +92,21 @@ const form = useForm({
                             <div>
                                 <InputLabel for="number" value="Blasting Number" />
 
-                                <SelectInput id="number" class="mt-1 block w-full" v-model="form.number" required>
-                                    <option v-for="number in props.whatsappNumber" :disabled="number.first_whatsapp_batches?.isActive">
+                                <SelectInput id="number" class="mt-1 block w-full" v-model="form.number" required @change="assignPort">
+                                    <option v-for="number in props.whatsappNumber" :disabled="number.first_whatsapp_batches?.isActive" :value="number.id">
                                         {{ number.name }} <span v-if="number.first_whatsapp_batches?.isActive"> - number blasting in progress</span>
                                     </option>
                                 </SelectInput>
 
                                 <InputError class="mt-2" :message="form.errors.name" />
+                            </div>
+                            
+                            <div v-if="form.number === '3'">
+                                <InputLabel for="array_number" value="Number" />
+
+                                <TextArea id="array_number" type="text" class="mt-1 block w-full" v-model="form.array_number" rows="1" required @change="editNumber" />
+
+                                <InputError class="mt-2" :message="form.errors.array_number" />
                             </div>
                             
                             <div>
@@ -127,9 +166,9 @@ const form = useForm({
                                 <SecondaryButton @click="back">
                                     Cancel
                                 </SecondaryButton>
-                                <button @click="testLog()">
+                                <!-- <button @click="testLog()">
                                     test
-                                </button>
+                                </button> -->
                             </div>
                         </form>
                     </section>
