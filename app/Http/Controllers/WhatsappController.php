@@ -112,8 +112,8 @@ class WhatsappController extends Controller
         // dd($activeWhatsappAndAvailable);
         foreach ($groups as $key=>$group) {
             // uncomment this for the prod function
-            // $passObject['phone'] = $group['JID'];
-            $passObject['phone'] = '601110100119@s.whatsapp.net';
+            $passObject['phone'] = $group['JID'];
+            // $passObject['phone'] = '601110100119@s.whatsapp.net';
 
             if (isset($file)) {
                 $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
