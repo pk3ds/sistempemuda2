@@ -19,16 +19,18 @@ class WhatsappBlastingProcess implements ShouldQueue
     public $passObject;
     public $link;
     public $file;
+    public $groups;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($passObject, $link, $file)
+    public function __construct($groups, $passObject, $link, $file)
     {
         $this->passObject = $passObject;
         $this->link = $link;
         $this->file = $file;
+        $this->groups = $groups;
     }
 
     /**
@@ -38,12 +40,15 @@ class WhatsappBlastingProcess implements ShouldQueue
      */
     public function handle()
     {
-        $checkCaption = isset($this->passObject['caption']);
-        if ($checkCaption) {
-            $api = Http::attach('image', file_get_contents($this->file), 'image.png')
-                ->post($this->link, $this->passObject);
-        } else {
-            $api = Http::post($this->link, $this->passObject);
+        foreach ($this->groups as $key => $group) {
+            $this->passObject['phone'] = $group['JID'];
+            $checkCaption = isset($this->passObject['caption']);
+            if ($checkCaption) {
+                $api = Http::attach('image', file_get_contents($this->file), 'image.png')
+                    ->post($this->link, $this->passObject);
+            } else {
+                $api = Http::post($this->link, $this->passObject);
+            }
         }
     }
 }
