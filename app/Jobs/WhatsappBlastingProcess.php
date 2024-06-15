@@ -19,6 +19,8 @@ class WhatsappBlastingProcess implements ShouldQueue
     public $passObject;
     public $link;
     public $file;
+    public $timeout = 120000;
+    public $failOnTimeout = false;
     /**
      * Create a new job instance.
      *
