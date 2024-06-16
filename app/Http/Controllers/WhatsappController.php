@@ -46,6 +46,7 @@ class WhatsappController extends Controller
      */
     public function store(Request $request)
     {
+        $increaseTimeLimit = set_time_limit(0);
         $port = $request->port;
         $message = $request->message;
         $link = env('WHATSAPP_API');
