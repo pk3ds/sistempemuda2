@@ -109,11 +109,18 @@ class WhatsappController extends Controller
                 WhatsappBatches::where('job_batches_id', $batch->id)->update([
                     'isActive' => false,
                 ]);
-        })->finally(
-            function(Batch $batch) {
+            }
+        )->finally(
+            function(Batch $batch) use ($passObject, $link, $file) {
                 if (!$batch->finished()) {
                     resolve(BatchRepository::class)->markAsFinished($batch->id);
                 }
+                if ($file !== "") {
+                    File::delete($file);
+                }
+                WhatsappBatches::where('job_batches_id', $batch->id)->update([
+                    'isActive' => false,
+                ]);
                 $checkWhatsappBatches = WhatsappBatches::where('job_batches_id', $batch->id);
                 echo strval($batch);
                 echo "finished";
