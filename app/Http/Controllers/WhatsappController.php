@@ -127,11 +127,11 @@ class WhatsappController extends Controller
                 $passObject['phone'] = $group['JID'];
                 // $passObject['phone'] = '601110100119@s.whatsapp.net';
 
-                // if (isset($file)) {
-                //     $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
-                // } else {
-                //     $batch->add(new WhatsappBlastingProcess($passObject, $link, null));
-                // }
+                if (isset($file)) {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
+                } else {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, null));
+                }
             }
         } else {
             foreach ($myArray as $key => $numberPersonal) {
