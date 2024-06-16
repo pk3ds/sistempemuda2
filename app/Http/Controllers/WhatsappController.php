@@ -7,6 +7,7 @@ use App\Models\CheckIn;
 use App\Models\WhatsappBatches;
 use App\Models\WhatsappNumber;
 use Illuminate\Bus\Batch;
+use Illuminate\Bus\BatchRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
@@ -108,7 +109,17 @@ class WhatsappController extends Controller
                 WhatsappBatches::where('job_batches_id', $batch->id)->update([
                     'isActive' => false,
                 ]);
-        })->dispatch();
+        })->finally(
+            function(Batch $batch) {
+                if (!$batch->finished()) {
+                    resolve(BatchRepository::class)->markAsFinished($batch->id);
+                }
+                $checkWhatsappBatches = WhatsappBatches::where('job_batches_id', $batch->id);
+                echo strval($batch);
+                echo "finished";
+                echo strval($checkWhatsappBatches);
+            }
+        )->dispatch();
         $whatsappBatches = WhatsappBatches::create([
             'whatsapp_number_id' => $findWhatsappNumberId,
             'job_batches_id' => $batch->id,
