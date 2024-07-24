@@ -7,6 +7,7 @@ use App\Models\CheckIn;
 use App\Models\WhatsappBatches;
 use App\Models\WhatsappNumber;
 use Illuminate\Bus\Batch;
+use Illuminate\Bus\BatchRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
@@ -46,17 +47,30 @@ class WhatsappController extends Controller
      */
     public function store(Request $request)
     {
+        $increaseTimeLimit = set_time_limit(0);
+        $port = $request->port;
         $message = $request->message;
         $link = env('WHATSAPP_API');
         $number = strtolower($request->number);
-        if ($number === 'penerangan') {
-            $link = $link . "3000";
-        } elseif ($number === 'mfast') {
-            $link = $link . "3001";
-        } elseif (!isset($request->number)) {
-            $link = $link . '3000';
+        if (isset($request->port)) {
+            $link = $link . $port;
+        } else {
+            $link = $link . $port;
+        }
+        // if ($number === 'penerangan') {
+        //     $link = $link . "3000";
+        // } elseif ($number === 'mfast') {
+        //     $link = $link . "3001";
+        // } elseif (!isset($request->number)) {
+        //     $link = $link . '3000';
+        // }
+        $personal = isset($request->array_number);
+        if ($personal) {
+            $myArray = $request->array_number;
         }
         $linkGroup = $link . '/user/my/groups';
+        $getGroupsResponse = Http::get($linkGroup);
+        $data = $getGroupsResponse->json();
         if ($request->option === 'message') {
             $link = $link . '/send/message';
             $passObject["message"] = $message;
@@ -69,15 +83,14 @@ class WhatsappController extends Controller
             $passObject["caption"] = $message;
             $passObject["compress"] = true;
         }
-        $getGroupsResponse = Http::get($linkGroup);
-        $data = $getGroupsResponse->json();
-        if (strtolower($data['code']) === 'success') {
-            $groups = $data['results']['data'];
-        } else {
-            return redirect()
-                ->route('whatsapp')
-                ->with('error', 'Error, whatsapp is not running.');
-
+        if (!$personal) {
+            if (strtolower($data['code']) === 'success') {
+                $groups = $data['results']['data'];
+            } else {
+                return redirect()
+                    ->route('whatsapp')
+                    ->with('error', 'Error, whatsapp is not running.');
+            }
         }
         if ($request->file_upload) {
             $file = $request->file('file_upload');
@@ -86,7 +99,7 @@ class WhatsappController extends Controller
         } else {
             $file = "";
         }
-        $findWhatsappNumberId = WhatsappNumber::whereLike('name', $request->number)->first()->id;
+        $findWhatsappNumberId = $request->number;
         // dd($findWhatsappNumberId);
         $batch = Bus::batch([])->then(
             function(Batch $batch) use ($passObject, $link, $file) {
@@ -96,7 +109,24 @@ class WhatsappController extends Controller
                 WhatsappBatches::where('job_batches_id', $batch->id)->update([
                     'isActive' => false,
                 ]);
-        })->dispatch();
+            }
+        )->finally(
+            function(Batch $batch) use ($passObject, $link, $file) {
+                if (!$batch->finished()) {
+                    resolve(BatchRepository::class)->markAsFinished($batch->id);
+                }
+                if ($file !== "") {
+                    File::delete($file);
+                }
+                WhatsappBatches::where('job_batches_id', $batch->id)->update([
+                    'isActive' => false,
+                ]);
+                $checkWhatsappBatches = WhatsappBatches::where('job_batches_id', $batch->id);
+                echo strval($batch);
+                echo "finished";
+                echo strval($checkWhatsappBatches);
+            }
+        )->dispatch();
         $whatsappBatches = WhatsappBatches::create([
             'whatsapp_number_id' => $findWhatsappNumberId,
             'job_batches_id' => $batch->id,
@@ -110,15 +140,27 @@ class WhatsappController extends Controller
         //     $query->where('isActive', false);
         // })->get();
         // dd($activeWhatsappAndAvailable);
-        foreach ($groups as $key=>$group) {
-            // uncomment this for the prod function
-            $passObject['phone'] = $group['JID'];
-            // $passObject['phone'] = '601110100119@s.whatsapp.net';
+        if (!$personal) {
+            foreach ($groups as $key=>$group) {
+                // uncomment this for the prod function
+                $passObject['phone'] = $group['JID'];
+                // $passObject['phone'] = '601110100119@s.whatsapp.net';
 
-            if (isset($file)) {
-                $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
-            } else {
-                $batch->add(new WhatsappBlastingProcess($passObject, $link, null));
+                if (isset($file)) {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
+                } else {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, null));
+                }
+            }
+        } else {
+            foreach ($myArray as $key => $numberPersonal) {
+                $passObject['phone'] = trim($numberPersonal) . '@s.whatsapp.net';
+                // $passObject['phone'] = '601110100119@s.whatsapp.net';
+                if (isset($file)) {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, $file));
+                } else {
+                    $batch->add(new WhatsappBlastingProcess($passObject, $link, null));
+                }
             }
         }
         return redirect()

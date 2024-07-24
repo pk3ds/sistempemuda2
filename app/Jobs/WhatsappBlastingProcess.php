@@ -45,5 +45,6 @@ class WhatsappBlastingProcess implements ShouldQueue
         } else {
             $api = Http::post($this->link, $this->passObject);
         }
+        sleep(3);
     }
 }
