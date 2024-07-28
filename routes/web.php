@@ -19,6 +19,7 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\LuckyDrawController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,11 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::get('/winners/{id}/edit', [WinnerController::class, 'edit'])->name('winners.edit');
     Route::patch('/winners{id}', [WinnerController::class, 'update'])->name('winners.update');
     Route::put('/winners{id}/claim', [WinnerController::class, 'claim'])->name('winners.claim');
+
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
 });
 
 Route::middleware('auth')->group(function () {
