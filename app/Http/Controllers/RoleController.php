@@ -46,7 +46,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        dd(Request::get('name'), Request::get('permission_id'));
+        $role = Role::findOrCreate(Request::get('name'));
+        $role->syncPermissions(Request::get('permission_id'));
+        return redirect()
+                    ->route('roles.index')
+                    ->with('success', 'Role "' . $role->name . '" successfully updated.');
     }
 
     /**
@@ -66,9 +70,14 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+
+     public function edit(Role $role)
     {
-        //
+        return Inertia::render('Roles/Edit', [
+            'role' => $role,
+            'permissionFromRole' => $role->permissions,
+            'permissions' => Permission::all(),
+        ]);
     }
 
     /**

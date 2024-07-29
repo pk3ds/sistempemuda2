@@ -3,11 +3,9 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
-import SelectInput from "@/Components/SelectInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { useForm, Head } from "@inertiajs/inertia-vue3";
-import Checkbox from "@/Components/Checkbox.vue";
 
 function back() {
   window.history.back();
@@ -19,8 +17,12 @@ defineProps({
 
 const form = useForm({
   name: "",
-  permission_id: [""],
+  permission_id: [],
 });
+
+function getPermission() {
+  console.log(form.permission_id);
+}
 </script>
 
 <template>
@@ -62,39 +64,28 @@ const form = useForm({
               <div>
                 <InputLabel for="permission_id" value="Permission" />
 
-                <SelectInput
+                <select
                   id="permission_id"
-                  class="mt-1 block w-full"
+                  class="border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 rounded-md shadow-sm mt-1 block w-full"
                   v-model="form.permission_id"
                   multiple
                 >
                   <option
                     v-for="permission in permissions"
-                    :value="permission.id"
+                    :value="permission.name"
+                    :key="permission.name"
                   >
                     {{ permission.name }}
                   </option>
-                </SelectInput>
+                </select>
 
                 <InputError class="mt-2" :message="form.errors.permission_id" />
               </div>
 
-              <!-- <div v-for="(permission, index) in permissions" :key="index"> -->
-              <!-- <div class="block mt-4">
-                  <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">
-                      {{ permission.name }}
-                    </span>
-                  </label>
-                </div> -->
-
-              <!-- </div> -->
-
               <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing"
-                  >Create</PrimaryButton
-                >
+                <PrimaryButton :disabled="form.processing">
+                  Create
+                </PrimaryButton>
                 <SecondaryButton @click="back"> Cancel </SecondaryButton>
               </div>
             </form>
