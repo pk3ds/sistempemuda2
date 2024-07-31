@@ -44,7 +44,7 @@ const showingNavigationDropdown = ref(false);
                 >
                   Dashboard
                 </NavLink>
-                <template>
+                <template v-if="$page.props.auth.role.name === 'Admin'">
                   <NavLink
                     :href="route('users')"
                     :active="route().current('users')"
@@ -291,7 +291,10 @@ const showingNavigationDropdown = ref(false);
             <ResponsiveNavLink
               :href="route('whatsapp')"
               :active="route().current('whatsapp')"
-              v-if="$page.props.auth.can['whatsapp.view']"
+              v-if="
+                $page.props.auth.can['whatsapp.view'] ||
+                $page.props.auth.role.name === 'Admin'
+              "
             >
               Whatsapp Blasting
             </ResponsiveNavLink>
