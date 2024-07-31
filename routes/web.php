@@ -76,8 +76,7 @@ Route::get('/dashboard', function () {
   ->middleware(['auth', 'verified'])
   ->name('dashboard');
 
-Route::group(
-  ['middleware' => ['role_or_permission:Admin|whatsapp.view']],
+Route::middleware(['auth', 'role_or_permission:Admin|whatsapp.view'])->group(
   function () {
     Route::get('/whatsapp', [WhatsappController::class, 'index'])->name(
       'whatsapp'
