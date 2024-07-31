@@ -34,7 +34,7 @@ const props = defineProps({
 
 const form = useForm({
   name: props.user.name,
-  usernames: props.user.username,
+  username: props.user.username,
   email: props.user.email,
   phone: props.user.phone,
   role_id: props.user.roles?.[0]?.id,
@@ -132,19 +132,19 @@ const formatDate = (date) => {
                   </div>
 
                   <div>
-                    <InputLabel for="usernames" value="Username" />
+                    <InputLabel for="username" value="Username" />
 
                     <TextInput
-                      id="usernames"
+                      id="username"
                       type="text"
                       class="mt-1 block w-full"
-                      v-model="form.usernames"
+                      v-model="form.username"
                       :readonly="user.deleted_at"
                       required
-                      autocomplete="usernames"
+                      autocomplete="username"
                     />
 
-                    <InputError class="mt-2" :message="form.errors.usernames" />
+                    <InputError class="mt-2" :message="form.errors.username" />
                   </div>
 
                   <div>

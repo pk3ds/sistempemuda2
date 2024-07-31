@@ -54,6 +54,12 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::group(['auth' => ['can:whatsapp.view|role:Admin']], function () {
+    Route::get('/whatsapp', [WhatsappController::class, 'index'])->name('whatsapp');
+    Route::get('/whatsapp/create', [WhatsappController::class, 'create'])->name('whatsapp.create');
+    Route::post('/whatsapp', [WhatsappController::class, 'store'])->name('whatsapp.store');
+});
+
 Route::middleware('auth', 'role:Admin')->group(function () {
     Route::get('/contingents', [GroupController::class, 'index'])->name('groups');
     Route::get('/contingents/create', [GroupController::class, 'create'])->name('groups.create');
@@ -72,9 +78,6 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');
     Route::post('/donations/{donation}/upload', [DonationController::class, 'upload'])->name('donations.upload');
     
-    Route::get('/whatsapp', [WhatsappController::class, 'index'])->name('whatsapp');
-    Route::get('/whatsapp/create', [WhatsappController::class, 'create'])->name('whatsapp.create');
-    Route::post('/whatsapp', [WhatsappController::class, 'store'])->name('whatsapp.store');
     // Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
     // Route::patch('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     // Route::delete('/donations/{donation}/delete', [DonationController::class, 'destroy'])->name('donations.destroy');

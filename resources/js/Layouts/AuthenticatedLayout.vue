@@ -35,9 +35,7 @@ const showingNavigationDropdown = ref(false);
 
               <!-- Navigation Links Auth -->
               <div
-                v-if="
-                  $page.props.auth.user && $page.props.auth.can['view navs']
-                "
+                v-if="$page.props.auth.user"
                 class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex"
               >
                 <NavLink
@@ -46,34 +44,40 @@ const showingNavigationDropdown = ref(false);
                 >
                   Dashboard
                 </NavLink>
-                <NavLink
-                  :href="route('users')"
-                  :active="route().current('users')"
-                >
-                  Users
-                </NavLink>
-                <NavLink
-                  :href="route('sessions')"
-                  :active="route().current('sessions')"
-                >
-                  Sessions
-                </NavLink>
-                <NavLink
-                  :href="route('committees')"
-                  :active="route().current('committees')"
-                >
-                  Committees
-                </NavLink>
-                <NavLink
-                  :href="route('donations')"
-                  :active="route().current('donations')"
-                  v-if="false"
-                >
-                  Donations
-                </NavLink>
+                <template>
+                  <NavLink
+                    :href="route('users')"
+                    :active="route().current('users')"
+                  >
+                    Users
+                  </NavLink>
+                  <NavLink
+                    :href="route('sessions')"
+                    :active="route().current('sessions')"
+                  >
+                    Sessions
+                  </NavLink>
+                  <NavLink
+                    :href="route('committees')"
+                    :active="route().current('committees')"
+                  >
+                    Committees
+                  </NavLink>
+                  <NavLink
+                    :href="route('donations')"
+                    :active="route().current('donations')"
+                    v-if="false"
+                  >
+                    Donations
+                  </NavLink>
+                </template>
                 <NavLink
                   :href="route('whatsapp')"
                   :active="route().current('whatsapp')"
+                  v-if="
+                    $page.props.auth.can['whatsapp.view'] ||
+                    $page.props.auth.role.name === 'Admin'
+                  "
                 >
                   Whatsapp Blasting
                 </NavLink>
@@ -257,34 +261,37 @@ const showingNavigationDropdown = ref(false);
             >
               Dashboard
             </ResponsiveNavLink>
-            <ResponsiveNavLink
-              :href="route('users')"
-              :active="route().current('users')"
-            >
-              Users
-            </ResponsiveNavLink>
-            <ResponsiveNavLink
-              :href="route('sessions')"
-              :active="route().current('sessions')"
-            >
-              Sessions
-            </ResponsiveNavLink>
-            <ResponsiveNavLink
-              :href="route('committees')"
-              :active="route().current('committees')"
-            >
-              Committees
-            </ResponsiveNavLink>
-            <ResponsiveNavLink
-              :href="route('donations')"
-              :active="route().current('donations')"
-              v-if="false"
-            >
-              Donations
-            </ResponsiveNavLink>
+            <template v-if="$page.props.auth.role.name === 'Admin'">
+              <ResponsiveNavLink
+                :href="route('users')"
+                :active="route().current('users')"
+              >
+                Users
+              </ResponsiveNavLink>
+              <ResponsiveNavLink
+                :href="route('sessions')"
+                :active="route().current('sessions')"
+              >
+                Sessions
+              </ResponsiveNavLink>
+              <ResponsiveNavLink
+                :href="route('committees')"
+                :active="route().current('committees')"
+              >
+                Committees
+              </ResponsiveNavLink>
+              <ResponsiveNavLink
+                :href="route('donations')"
+                :active="route().current('donations')"
+                v-if="false"
+              >
+                Donations
+              </ResponsiveNavLink>
+            </template>
             <ResponsiveNavLink
               :href="route('whatsapp')"
               :active="route().current('whatsapp')"
+              v-if="$page.props.auth.can['whatsapp.view']"
             >
               Whatsapp Blasting
             </ResponsiveNavLink>
