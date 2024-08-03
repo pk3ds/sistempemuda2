@@ -15,7 +15,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Bus;
 
-class WhatsappController extends BaseController
+class WhatsappController extends Controller
 {
   /**
    * Display a listing of the resource.
