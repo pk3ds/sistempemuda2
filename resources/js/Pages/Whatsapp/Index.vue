@@ -78,13 +78,18 @@ const form = useForm({
 const onSubmit = async () => {
   try {
     loading.value = true;
-    await form.post(route("whatsapp.store"));
-    response.value = data;
-    if (response.value) {
-      loading.value = false;
-      form.number = "";
-      form.reset();
-    }
+    await form.post(route("whatsapp.store"), {
+      onSuccess: (response) => {
+        console.log(response);
+        loading.value = false;
+      }
+    });
+    // response.value = data;
+    // if (response.value) {
+    //   loading.value = false;
+    //   form.number = "";
+    //   form.reset();
+    // }
   } catch (error) {
     console.error("Error:", error);
   }

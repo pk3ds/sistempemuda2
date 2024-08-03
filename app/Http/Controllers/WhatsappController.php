@@ -177,9 +177,9 @@ class WhatsappController extends BaseController
       }
     }
     return redirect()
-      ->route('whatsapp')
+      ->back()
       ->with('success', 'Message send is being processed')
-      ->with('data', $batch);
+      ->with('data', ['batch' => '$batch']);
     // session()->flash('success', 'Message send is being processed');
     // return $this->sendResponse($batch, 'Message send is being processed');
   }
