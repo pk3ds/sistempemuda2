@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                     'warn' => $request->session()->get('warn'),
                     'error' => $request->session()->get('error'),
                     'status' => $request->session()->get('status'),
+                    'data' => $request->session()->get('data'),
                 ];
             },
             'ziggy' => function () use ($request) {

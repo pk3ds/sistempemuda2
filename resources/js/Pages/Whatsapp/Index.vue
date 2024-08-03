@@ -6,15 +6,18 @@ import SelectInput from "@/Components/SelectInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { useForm, Head } from "@inertiajs/inertia-vue3";
+import { useForm, Head, usePage } from "@inertiajs/inertia-vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import TextArea from "../../Components/TextArea.vue";
 import FileInput from "@/Components/FileInput.vue";
 import HalfCircleSpinner from "@/Components/Loading.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 
 const loading = ref(false);
+const response = ref(null);
+
+const { ...data } = computed(() => usePage().props.value.flash).value;
 
 const props = defineProps({
   whatsappNumber: Object,
@@ -72,9 +75,20 @@ const form = useForm({
   array_number: "",
 });
 
-const onSubmit = () => {
-  loading.value = true;
-  form.post(route("whatsapp.store"));
+const onSubmit = async () => {
+  try {
+    loading.value = true;
+    await form.post(route("whatsapp.store"));
+    response.value = data;
+    if (response.value) {
+      loading.value = false;
+      form.number = "";
+      form.reset();
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+
   // axios
   //   .post(route("whatsapp.store", form))
   //   .then((response) => {
