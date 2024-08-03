@@ -79,10 +79,10 @@ const onSubmit = async () => {
   try {
     loading.value = true;
     await form.post(route("whatsapp.store"), {
-      onSuccess: (response) => {
-        console.log(response);
+      onSuccess: () => {
         loading.value = false;
-      }
+        form.reset();
+      },
     });
     // response.value = data;
     // if (response.value) {
@@ -116,8 +116,6 @@ const onSubmit = async () => {
               <h2 class="text-lg font-medium text-gray-900">
                 Whatsapp Blasting
               </h2>
-
-              <span>{{ $page.props.flash }}</span>
 
               <p class="mt-1 text-sm text-gray-600">Send whatsapp</p>
             </header>

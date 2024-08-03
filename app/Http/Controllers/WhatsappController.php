@@ -178,8 +178,7 @@ class WhatsappController extends BaseController
     }
     return redirect()
       ->back()
-      ->with('success', 'Message send is being processed')
-      ->with('data', ['batch' => '$batch']);
+      ->with('success', 'Message send is being processed');
     // session()->flash('success', 'Message send is being processed');
     // return $this->sendResponse($batch, 'Message send is being processed');
   }
