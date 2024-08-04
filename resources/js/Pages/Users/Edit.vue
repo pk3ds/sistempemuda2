@@ -122,7 +122,6 @@ const formatDate = (date) => {
                       type="text"
                       class="mt-1 block w-full"
                       v-model="form.name"
-                      required
                       :readonly="user.deleted_at"
                       autofocus
                       autocomplete="name"
