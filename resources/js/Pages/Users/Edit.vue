@@ -140,7 +140,6 @@ const formatDate = (date) => {
                       class="mt-1 block w-full"
                       v-model="form.username"
                       :readonly="user.deleted_at"
-                      required
                       autocomplete="username"
                     />
 
@@ -173,7 +172,6 @@ const formatDate = (date) => {
                       v-model="form.phone"
                       :readonly="user.deleted_at"
                       autocomplete="phone"
-                      required
                     />
 
                     <InputError class="mt-2" :message="form.errors.phone" />
