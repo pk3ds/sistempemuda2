@@ -125,7 +125,7 @@ class UserController extends Controller
           'nullable',
           Rule::unique('users')->ignore($user->id),
         ],
-        'name' => ['required', 'max:50'],
+        'name' => ['nullable', 'max:50'],
         'email' => [
           'required',
           'max:50',
