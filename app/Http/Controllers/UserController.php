@@ -118,13 +118,14 @@ class UserController extends Controller
   {
     try {
       DB::beginTransaction();
+
       $validated = Request::validate([
         'username' => [
-          'required',
           'max:50',
+          'nullable',
           Rule::unique('users')->ignore($user->id),
         ],
-        'name' => ['required', 'max:50'],
+        'name' => ['nullable', 'max:50'],
         'email' => [
           'required',
           'max:50',
@@ -132,8 +133,8 @@ class UserController extends Controller
           Rule::unique('users')->ignore($user->id),
         ],
         'phone' => [
-          'required',
           'max:50',
+          'nullable',
           Rule::unique('users')->ignore($user->id),
         ],
       ]);
@@ -144,13 +145,13 @@ class UserController extends Controller
         if ($role->name != 'User') {
           $user->update($validated);
           $user->is_committee = true;
-          $user->save();
-          DB::commit();
+          // $user->save();
+          // DB::commit();
           return redirect()
             ->route('committees')
             ->with(
               'success',
-              'User "' . $user->username . '" role changed to committee'
+              'User "' . $user->name . '" role changed to committee'
             );
         }
       }
@@ -160,12 +161,11 @@ class UserController extends Controller
       DB::commit();
       return redirect()
         ->back()
-        ->with('success', 'User "' . $user->username . '" updated');
+        ->with('success', 'User "' . $user->name . '" updated');
     } catch (\Throwable $e) {
-      dd($e);
       return redirect()
         ->back()
-        ->with('error', 'Error updating user "' . $user->username . '"');
+        ->with('error', 'Error updating user "' . $user->name . '"');
     }
   }
 
@@ -181,7 +181,7 @@ class UserController extends Controller
 
     return redirect()
       ->route('users')
-      ->with('error', 'User "' . $user->username . '" deleted');
+      ->with('error', 'User "' . $user->name . '" deleted');
   }
 
   public function reset(User $user)
