@@ -145,8 +145,8 @@ class UserController extends Controller
         if ($role->name != 'User') {
           $user->update($validated);
           $user->is_committee = true;
-          // $user->save();
-          // DB::commit();
+          $user->save();
+          DB::commit();
           return redirect()
             ->route('committees')
             ->with(
