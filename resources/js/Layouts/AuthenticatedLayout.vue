@@ -44,7 +44,7 @@ const showingNavigationDropdown = ref(false);
                 >
                   Dashboard
                 </NavLink>
-                <template v-if="$page.props.auth.role.name === 'Admin'">
+                <template v-if="$page.props.auth.role?.name === 'Admin'">
                   <NavLink
                     :href="route('users')"
                     :active="route().current('users')"
@@ -76,7 +76,7 @@ const showingNavigationDropdown = ref(false);
                   :active="route().current('whatsapp')"
                   v-if="
                     $page.props.auth.can['whatsapp.view'] ||
-                    $page.props.auth.role.name === 'Admin'
+                    $page.props.auth.role?.name === 'Admin'
                   "
                 >
                   Whatsapp Blasting
@@ -143,7 +143,7 @@ const showingNavigationDropdown = ref(false);
                       Lucky Draw
                     </DropdownLink>
                     <DropdownLink
-                      v-if="$page.props.auth.role.name === 'Admin'"
+                      v-if="$page.props.auth.role?.name === 'Admin'"
                       :href="route('roles.index')"
                     >
                       Roles And Permission
@@ -261,7 +261,7 @@ const showingNavigationDropdown = ref(false);
             >
               Dashboard
             </ResponsiveNavLink>
-            <template v-if="$page.props.auth.role.name === 'Admin'">
+            <template v-if="$page.props.auth.role?.name === 'Admin'">
               <ResponsiveNavLink
                 :href="route('users')"
                 :active="route().current('users')"
@@ -293,7 +293,7 @@ const showingNavigationDropdown = ref(false);
               :active="route().current('whatsapp')"
               v-if="
                 $page.props.auth.can['whatsapp.view'] ||
-                $page.props.auth.role.name === 'Admin'
+                $page.props.auth.role?.name === 'Admin'
               "
             >
               Whatsapp Blasting
@@ -304,7 +304,7 @@ const showingNavigationDropdown = ref(false);
           <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
               <div class="font-medium text-base text-white">
-                {{ $page.props.auth.user.name }}
+                {{ $page.props.auth.user?.name }}
               </div>
               <div class="font-medium text-sm text-gray-300">
                 {{ $page.props.auth.user.email }}
