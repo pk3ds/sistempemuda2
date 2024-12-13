@@ -28,7 +28,7 @@ return new class extends Migration {
    */
   public function down()
   {
-    Schema::table('whatsapp_number', function (Blueprint $table) {
+    Schema::table('whatsapp_numbers', function (Blueprint $table) {
       $table->dropConstrainedForeignId('user_id');
       $table->dropColumn('address');
     });
