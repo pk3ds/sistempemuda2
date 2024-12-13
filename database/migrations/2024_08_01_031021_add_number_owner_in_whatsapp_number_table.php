@@ -30,6 +30,7 @@ return new class extends Migration {
   {
     Schema::table('whatsapp_number', function (Blueprint $table) {
       $table->dropConstrainedForeignId('user_id');
+      $table->dropColumn('address');
     });
   }
 };
