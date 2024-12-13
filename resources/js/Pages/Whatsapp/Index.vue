@@ -44,24 +44,41 @@ function assignPort(e) {
 
 function editNumber(e) {
   const value = e.target.value;
-  const findComma = value.indexOf(",");
-  let theArray = [];
-  if (findComma != -1) {
-    theArray = value.split(",");
-  } else {
-    theArray = value.split(/\s+/);
-  }
-  for (let i = 0; i < theArray.length; i++) {
-    const element = theArray[i];
-    if (element.substring(0, 1) === "0") {
-      theArray[i] = "6" + theArray[i];
-    } else if (element.substring(0, 1) === "1") {
-      theArray[i] = "60" + theArray[i];
-    } else {
-      theArray[i] = theArray[i];
+  // Split by comma, space, or dash and filter out empty strings
+  let theArray = value
+    // Remove all symbols except numbers, commas, spaces, and dashes
+    .replace(/[^\d,\s-]/g, "")
+    .replace(/-/g, ",")
+    .split(/[,\s]+/)
+    .filter(Boolean);
+
+  theArray = theArray.map((number) => {
+    // Remove any remaining spaces or dashes
+    number = number.replace(/[\s-]/g, "");
+
+    if (number.startsWith("6")) {
+      // For numbers starting with 601x (12 chars limit)
+      if (/^60[1][0-9]/.test(number)) {
+        return number.substring(0, 12);
+      }
+      return number;
+    } else if (number.startsWith("0")) {
+      // For numbers starting with 01x (11 chars limit)
+      if (/^0[1][0-9]/.test(number)) {
+        return "6" + number.substring(0, 11);
+      }
+      return "6" + number;
+    } else if (/^[1][0-9]/.test(number)) {
+      // For numbers starting with 1x (10 chars limit)
+      return "60" + number.substring(0, 10);
     }
-  }
-  form.array_number = theArray;
+    return number;
+  });
+
+  // Remove duplicates using Set
+  theArray = [...new Set(theArray)];
+
+  form.array_number = theArray.join(",");
 }
 
 const form = useForm({
