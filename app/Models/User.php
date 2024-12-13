@@ -94,4 +94,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(History::class, 'loggable');
     }
+
+    public function whatsappNumbers()
+    {
+        return $this->belongsToMany(WhatsappNumber::class);
+    }
 }

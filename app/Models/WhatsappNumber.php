@@ -31,4 +31,9 @@ class WhatsappNumber extends Model
     {
         return $query->where($column, 'like', '%'.$value.'%');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

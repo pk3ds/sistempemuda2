@@ -21,7 +21,10 @@ const response = ref(null);
 const { ...data } = computed(() => usePage().props.value.flash).value;
 
 const props = defineProps({
-  whatsappNumber: Object,
+  whatsappNumber: {
+    type: Array,
+    required: true
+  }
 });
 
 function back() {
@@ -203,6 +206,15 @@ function clearAllNumbers() {
     numberInput.value.value = "";
   }
 }
+
+const page = usePage();
+
+function canAccessNumber(number) {
+  const isAdmin = page.props.value.auth.role.name === 'Admin';
+  const isOwner = number.users.some(user => user.id === page.props.value.auth.user.id);
+  
+  return isAdmin || isOwner;
+}
 </script>
 
 <template>
@@ -236,16 +248,13 @@ function clearAllNumbers() {
                   v-model="form.number"
                   required
                 >
+                  <option value="">Select a number</option>
                   <option
                     v-for="number in props.whatsappNumber"
-                    :disabled="number.first_whatsapp_batches?.isActive"
+                    :key="number.id"
                     :value="number.id"
-                    :hidden="
-                      !(
-                        $page.props.auth.role.name === 'Admin' ||
-                        number.user_id === $page.props.auth.user.id
-                      )
-                    "
+                    :disabled="number.first_whatsapp_batches?.isActive"
+                    v-show="canAccessNumber(number)"
                   >
                     {{ number.name }}
                     <span v-if="number.first_whatsapp_batches?.isActive">

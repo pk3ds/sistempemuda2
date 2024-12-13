@@ -14,10 +14,7 @@ return new class extends Migration {
   {
     Schema::table('whatsapp_numbers', function (Blueprint $table) {
       $table->string('address')->nullable();
-      $table
-        ->foreignId('user_id')
-        ->nullable()
-        ->constrained();
+      $table->boolean('canSendPersonal')->nullable();
     });
   }
 
@@ -29,8 +26,8 @@ return new class extends Migration {
   public function down()
   {
     Schema::table('whatsapp_numbers', function (Blueprint $table) {
-      $table->dropConstrainedForeignId('user_id');
       $table->dropColumn('address');
+      $table->dropColumn('canSendPersonal');
     });
   }
 };

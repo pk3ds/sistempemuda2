@@ -24,11 +24,10 @@ class WhatsappController extends Controller
    */
   public function index()
   {
-    $whatsappNumber = WhatsappNumber::where('isActive', 1)
-      ->with('first_whatsappBatches')
-      ->get();
+    $whatsappNumbers = WhatsappNumber::with(['users', 'first_whatsappBatches'])->get();
+    
     return Inertia::render('Whatsapp/Index', [
-      'whatsappNumber' => $whatsappNumber,
+        'whatsappNumber' => $whatsappNumbers
     ]);
   }
 
