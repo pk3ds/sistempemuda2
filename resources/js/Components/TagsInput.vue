@@ -49,9 +49,9 @@ function editNumber(e) {
   let value = typeof e === "object" ? e.target.value : e;
 
   value = value
-    .split(",")
+    .split(/[,\n]/)
     .map((segment) => {
-      return segment.trim().replace(/[\s]/g, "").split("-").join("");
+      return segment.trim();
     })
     .filter(Boolean);
 
