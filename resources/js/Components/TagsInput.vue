@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -15,6 +15,20 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 const numberInput = ref(null);
+
+const MAX_VISIBLE_NUMBERS = 50;
+
+const numberDisplay = computed(() => {
+  const numbers = props.modelValue.split(",").filter((n) => n);
+  return {
+    visible: numbers.slice(0, MAX_VISIBLE_NUMBERS),
+    remaining: Math.max(0, numbers.length - MAX_VISIBLE_NUMBERS),
+  };
+});
+
+const totalNumbers = computed(() => {
+  return props.modelValue.split(",").filter((n) => n).length;
+});
 
 function handlePaste(e) {
   e.preventDefault();
@@ -58,9 +72,7 @@ function editNumber(e) {
   value = value.map((number) => {
     number = number.replace(/\D/g, "");
 
-    if (/^601[0-9]{9}$/.test(number)) {
-      return number;
-    } else if (/^601[0-9]{8}$/.test(number)) {
+    if (number.startsWith("60")) {
       return number;
     } else if (number.startsWith("1")) {
       return "60" + number;
@@ -71,10 +83,6 @@ function editNumber(e) {
   });
 
   value = [...new Set(value)];
-
-  value = value.filter((number) => {
-    return /^601[0-9]{8,9}$/.test(number);
-  });
 
   emit("update:modelValue", value.join(","));
 }
@@ -130,7 +138,10 @@ function clearAll() {
 
 <template>
   <div class="flex justify-between items-center">
-    <slot name="label"></slot>
+    <div class="flex items-center gap-2">
+      <slot name="label"></slot>
+      <span class="text-sm text-gray-500">({{ totalNumbers }})</span>
+    </div>
     <button
       type="button"
       @click="clearAll"
@@ -162,7 +173,7 @@ function clearAll() {
   >
     <div class="flex flex-wrap gap-2 p-2">
       <div
-        v-for="number in modelValue.split(',').filter((n) => n)"
+        v-for="number in numberDisplay.visible"
         :key="number"
         class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-md px-2 py-1 text-sm flex items-center gap-1"
       >
@@ -171,6 +182,21 @@ function clearAll() {
           type="button"
           @click="removeNumber(number)"
           class="text-emerald-500 hover:text-emerald-700 font-bold"
+        >
+          ×
+        </button>
+      </div>
+
+      <div
+        v-if="numberDisplay.remaining > 0"
+        class="bg-gray-100 border border-gray-200 text-gray-700 rounded-md px-2 py-1 text-sm flex items-center gap-1"
+      >
+        <span>+{{ numberDisplay.remaining }} more</span>
+        <button
+          type="button"
+          @click="clearAll"
+          class="text-gray-500 hover:text-red-600 ml-1"
+          title="Clear all numbers"
         >
           ×
         </button>
