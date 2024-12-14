@@ -256,6 +256,12 @@ Route::middleware('auth', 'role:Admin')->group(function () {
   Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name(
     'roles.edit'
   );
+
+  Route::get('/whatsapp/manage', [WhatsappController::class, 'manage'])->name('whatsapp.manage');
+  Route::post('/whatsapp/numbers', [WhatsappController::class, 'storeNumber'])->name('whatsapp.numbers.store');
+  Route::put('/whatsapp/numbers/{whatsappNumber}', [WhatsappController::class, 'updateNumber'])->name('whatsapp.numbers.update');
+  Route::delete('/whatsapp/numbers/{whatsappNumber}', [WhatsappController::class, 'destroyNumber'])->name('whatsapp.numbers.destroy');
+  Route::put('/whatsapp/numbers/{whatsappNumber}/users', [WhatsappController::class, 'updateUsers'])->name('whatsapp.numbers.users.update');
 });
 
 Route::middleware('auth')->group(function () {

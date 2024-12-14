@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Bus;
+use App\Models\User;
 
 class WhatsappController extends Controller
 {
@@ -225,5 +226,63 @@ class WhatsappController extends Controller
   public function destroy($id)
   {
     //
+  }
+
+  public function manage()
+  {
+    return Inertia::render('Whatsapp/Manage', [
+        'whatsappNumbers' => WhatsappNumber::with('users')->get(),
+        'users' => User::select('id', 'name')->get()
+    ]);
+  }
+
+  public function storeNumber(Request $request)
+  {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'number' => 'required|string|max:255',
+        'port' => 'required|string|max:255',
+        'address' => 'nullable|string|max:255',
+        'canSendPersonal' => 'boolean',
+        'isActive' => 'boolean'
+    ]);
+
+    WhatsappNumber::create($validated);
+
+    return redirect()->back()->with('success', 'WhatsApp number created successfully.');
+  }
+
+  public function destroyNumber(WhatsappNumber $whatsappNumber)
+  {
+    $whatsappNumber->delete();
+    return redirect()->back()->with('success', 'WhatsApp number deleted successfully.');
+  }
+
+  public function updateUsers(Request $request, WhatsappNumber $whatsappNumber)
+  {
+    $validated = $request->validate([
+        'user_ids' => 'required|array',
+        'user_ids.*' => 'exists:users,id'
+    ]);
+
+    $whatsappNumber->users()->sync($validated['user_ids']);
+
+    return redirect()->back()->with('success', 'Users updated successfully.');
+  }
+
+  public function updateNumber(Request $request, WhatsappNumber $whatsappNumber)
+  {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'number' => 'required|string|max:255',
+        'port' => 'required|string|max:255',
+        'address' => 'nullable|string|max:255',
+        'canSendPersonal' => 'boolean',
+        'isActive' => 'boolean'
+    ]);
+
+    $whatsappNumber->update($validated);
+
+    return redirect()->back()->with('success', 'WhatsApp number updated successfully.');
   }
 }

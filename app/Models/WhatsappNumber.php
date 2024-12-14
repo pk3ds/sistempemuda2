@@ -11,10 +11,17 @@ class WhatsappNumber extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
-        'isActive',
+        'name',
         'number',
         'port',
+        'address',
+        'canSendPersonal',
+        'isActive'
+    ];
+
+    protected $casts = [
+        'canSendPersonal' => 'boolean',
+        'isActive' => 'boolean'
     ];
 
     public function whatsappBatches()
