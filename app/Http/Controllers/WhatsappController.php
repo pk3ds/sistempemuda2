@@ -169,7 +169,8 @@ class WhatsappController extends Controller
         }
       }
     } else {
-      foreach ($myArray as $key => $numberPersonal) {
+      $numberArray = array_filter(explode(',', $request->array_number));
+      foreach ($numberArray as $key => $numberPersonal) {
         $passObject['phone'] = trim($numberPersonal) . '@s.whatsapp.net';
         // $passObject['phone'] = '601110100119@s.whatsapp.net';
         if (isset($file)) {
