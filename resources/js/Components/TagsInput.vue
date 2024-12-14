@@ -49,31 +49,33 @@ function editNumber(e) {
   let value = typeof e === "object" ? e.target.value : e;
 
   value = value
-    .replace(/[^\d,\s-]/g, "")
-    .replace(/-/g, ",")
-    .split(/[,\s]+/)
+    .split(",")
+    .map((segment) => {
+      return segment.trim().replace(/[\s]/g, "").split("-").join("");
+    })
     .filter(Boolean);
 
   value = value.map((number) => {
-    number = number.replace(/[\s-]/g, "");
+    number = number.replace(/\D/g, "");
 
-    if (number.startsWith("6")) {
-      if (/^60[1][0-9]/.test(number)) {
-        return number.substring(0, 12);
-      }
+    if (/^601[0-9]{9}$/.test(number)) {
       return number;
+    } else if (/^601[0-9]{8}$/.test(number)) {
+      return number;
+    } else if (number.startsWith("1")) {
+      return "60" + number;
     } else if (number.startsWith("0")) {
-      if (/^0[1][0-9]/.test(number)) {
-        return "6" + number.substring(0, 11);
-      }
       return "6" + number;
-    } else if (/^[1][0-9]/.test(number)) {
-      return "60" + number.substring(0, 10);
     }
     return number;
   });
 
   value = [...new Set(value)];
+
+  value = value.filter((number) => {
+    return /^601[0-9]{8,9}$/.test(number);
+  });
+
   emit("update:modelValue", value.join(","));
 }
 

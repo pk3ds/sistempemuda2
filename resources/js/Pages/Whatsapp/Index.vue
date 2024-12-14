@@ -23,8 +23,8 @@ const { ...data } = computed(() => usePage().props.value.flash).value;
 const props = defineProps({
   whatsappNumber: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 });
 
 function back() {
@@ -84,41 +84,45 @@ function handleInputKeydown(e) {
 function editNumber(e) {
   let value = typeof e === "object" ? e.target.value : e;
 
-  // Remove all symbols except numbers, commas, spaces, and dashes
+  // First split by commas and clean each number
   value = value
-    .replace(/[^\d,\s-]/g, "")
-    .replace(/-/g, ",")
-    .split(/[,\s]+/)
-    .filter(Boolean);
+    .split(",")
+    .map((num) => {
+      // Remove all spaces and non-digit characters
+      return num.trim().replace(/\D/g, "");
+    })
+    .filter(Boolean); // Remove empty strings
 
   value = value.map((number) => {
-    // Remove any remaining spaces or dashes
-    number = number.replace(/[\s-]/g, "");
-
-    if (number.startsWith("6")) {
-      // For numbers starting with 601x (12 chars limit)
+    // Handle numbers starting with "60"
+    if (number.startsWith("60")) {
       if (/^60[1][0-9]/.test(number)) {
         return number.substring(0, 12);
       }
       return number;
-    } else if (number.startsWith("0")) {
-      // For numbers starting with 01x (11 chars limit)
+    }
+    // Handle numbers starting with single or double digits
+    else if (number.length <= 2) {
+      return "60" + number;
+    }
+    // Handle numbers starting with "0"
+    else if (number.startsWith("0")) {
       if (/^0[1][0-9]/.test(number)) {
-        return "6" + number.substring(0, 11);
+        return "6" + number;
       }
       return "6" + number;
-    } else if (/^[1][0-9]/.test(number)) {
-      // For numbers starting with 1x (10 chars limit)
-      return "60" + number.substring(0, 10);
+    }
+    // Handle numbers starting with "1"
+    else if (/^[1][0-9]/.test(number)) {
+      return "60" + number;
     }
     return number;
   });
 
-  // Remove duplicates using Set
+  // Remove duplicates
   value = [...new Set(value)];
 
-  // Update form value
-  form.array_number = value.join(",");
+  emit("update:modelValue", value.join(","));
 }
 
 function removeNumber(numberToRemove) {
@@ -210,9 +214,11 @@ function clearAllNumbers() {
 const page = usePage();
 
 function canAccessNumber(number) {
-  const isAdmin = page.props.value.auth.role.name === 'Admin';
-  const isOwner = number.users.some(user => user.id === page.props.value.auth.user.id);
-  
+  const isAdmin = page.props.value.auth.role.name === "Admin";
+  const isOwner = number.users.some(
+    (user) => user.id === page.props.value.auth.user.id
+  );
+
   return isAdmin || isOwner;
 }
 </script>
@@ -266,7 +272,13 @@ function canAccessNumber(number) {
                 <InputError class="mt-2" :message="form.errors.name" />
               </div>
 
-              <div v-if="['3', '4'].indexOf(form.number) > -1">
+              <div
+                v-if="
+                  form.number &&
+                  props.whatsappNumber.find((n) => n.id == form.number)
+                    ?.canSendPersonal
+                "
+              >
                 <TagsInput
                   v-model="form.array_number"
                   placeholder="Enter numbers"
