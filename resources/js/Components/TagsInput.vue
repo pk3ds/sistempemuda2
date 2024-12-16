@@ -134,6 +134,14 @@ function clearAll() {
     numberInput.value.value = "";
   }
 }
+
+function handleBlur(e) {
+  if (e.target.value) {
+    const existingNumbers = props.modelValue ? props.modelValue + "," : "";
+    editNumber(existingNumbers + e.target.value);
+    e.target.value = "";
+  }
+}
 </script>
 
 <template>
@@ -210,6 +218,7 @@ function clearAll() {
         @keydown.backspace="handleInputBackspace"
         @keydown.delete="handleDelete"
         @paste="handlePaste"
+        @blur="handleBlur"
         ref="numberInput"
       />
     </div>
