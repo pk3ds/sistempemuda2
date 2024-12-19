@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sistempemuda-app
+    networks:
+      - app_network
+      - mariadb_network
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: mysql
+      DB_HOST: centralized_mariadb
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - .:/var/www
+      - ./supervisor.conf:/etc/supervisor/conf.d/supervisord.conf
+    depends_on:
+      - db
+    working_dir: /var/www
+    expose:
+      - "9000" # Internal communication port
+    command: >
+      bash -c "supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+
+  nginx:
+    image: nginx:alpine
+    container_name: sistempemuda-nginx
+    networks:
+      - npm_network # For Nginx Proxy Manager
+      - app_network # To communicate with Laravel
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro # Custom Nginx configuration
+      - .:/var/www:ro
+    depends_on:
+      - app
+    ports:
+      - "8081:80" # Internal communication for testing/debugging (optional)
+
+networks:
+  app_network:
+    driver: bridge
+  mariadb_network:
+    external: true
+  npm_network:
+    external: true
