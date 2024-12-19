@@ -22,8 +22,6 @@ services:
     volumes:
       - .:/var/www
       - ./supervisor.conf:/etc/supervisor/conf.d/supervisord.conf
-    depends_on:
-      - db
     working_dir: /var/www
     expose:
       - "9000" # Internal communication port
