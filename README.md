@@ -9,28 +9,28 @@
 
 # 1. Clone and prepare
 
-git clone <your-repo-url>
-cd <project-directory>
-cp .env.example .env
+- git clone https://github.com/pk3ds/sistempemuda2.git
+- cd sistempemuda2
+- cp .env.example .env
 
 # 2. Build and start Docker
 
-docker-compose up -d --build
+- docker-compose up -d --build
 
 # 3. Install dependencies and setup Laravel
 
-docker-compose exec app composer install
-docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan migrate
-docker-compose exec app chmod -R 775 storage bootstrap/cache
-docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
-docker-compose exec app php artisan storage:link
+- docker-compose exec app composer install
+- docker-compose exec app php artisan key:generate
+- docker-compose exec app php artisan migrate
+- docker-compose exec app chmod -R 775 storage bootstrap/cache
+- docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+- docker-compose exec app php artisan storage:link
 
 # 4. Frontend assets (if needed)
 
-docker-compose exec app npm install
-docker-compose exec app npm run build
+- docker-compose exec app npm install
+- docker-compose exec app npm run build
 
 # 5. Verify installation
 
-docker-compose ps
+- docker-compose ps
