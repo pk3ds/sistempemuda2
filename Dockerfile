@@ -1,37 +1,46 @@
-# Base image for PHP
 FROM php:8.2-fpm
 
-# Set working directory
-WORKDIR /var/www
-
-# Install PHP and system dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
+    git \
+    curl \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     unzip \
-    curl \
-    git \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    supervisor
 
-# Install Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy application files (excluding `node_modules` and unbuilt assets)
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy existing application directory
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install dependencies
+RUN composer install
 
-# Set permissions for Laravel
-RUN chmod -R 775 storage bootstrap/cache \
-    && chown -R www-data:www-data /var/www
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose PHP-FPM port
+# Copy Supervisor configuration
+COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+
+# Set permissions and create necessary directories
+RUN mkdir -p /var/www/html/storage/logs && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Expose port 9000
 EXPOSE 9000
 
-# Start PHP-FPM server
-CMD ["php-fpm"]
+# Start Supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
