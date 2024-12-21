@@ -226,7 +226,7 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     CommitteeController::class,
     'edit',
   ])->name('committees.edit');
-  Route::patch('/committees{user}', [
+  Route::patch('/committees/{user}', [
     CommitteeController::class,
     'update',
   ])->name('committees.update');
@@ -241,10 +241,10 @@ Route::middleware('auth', 'role:Admin')->group(function () {
   Route::get('/winners/{id}/edit', [WinnerController::class, 'edit'])->name(
     'winners.edit'
   );
-  Route::patch('/winners{id}', [WinnerController::class, 'update'])->name(
+  Route::patch('/winners/{id}', [WinnerController::class, 'update'])->name(
     'winners.update'
   );
-  Route::put('/winners{id}/claim', [WinnerController::class, 'claim'])->name(
+  Route::put('/winners/{id}/claim', [WinnerController::class, 'claim'])->name(
     'winners.claim'
   );
 
@@ -257,11 +257,25 @@ Route::middleware('auth', 'role:Admin')->group(function () {
     'roles.edit'
   );
 
-  Route::get('/whatsapp/manage', [WhatsappController::class, 'manage'])->name('whatsapp.manage');
-  Route::post('/whatsapp/numbers', [WhatsappController::class, 'storeNumber'])->name('whatsapp.numbers.store');
-  Route::put('/whatsapp/numbers/{whatsappNumber}', [WhatsappController::class, 'updateNumber'])->name('whatsapp.numbers.update');
-  Route::delete('/whatsapp/numbers/{whatsappNumber}', [WhatsappController::class, 'destroyNumber'])->name('whatsapp.numbers.destroy');
-  Route::put('/whatsapp/numbers/{whatsappNumber}/users', [WhatsappController::class, 'updateUsers'])->name('whatsapp.numbers.users.update');
+  Route::get('/whatsapp/manage', [WhatsappController::class, 'manage'])->name(
+    'whatsapp.manage'
+  );
+  Route::post('/whatsapp/numbers', [
+    WhatsappController::class,
+    'storeNumber',
+  ])->name('whatsapp.numbers.store');
+  Route::put('/whatsapp/numbers/{whatsappNumber}', [
+    WhatsappController::class,
+    'updateNumber',
+  ])->name('whatsapp.numbers.update');
+  Route::delete('/whatsapp/numbers/{whatsappNumber}', [
+    WhatsappController::class,
+    'destroyNumber',
+  ])->name('whatsapp.numbers.destroy');
+  Route::put('/whatsapp/numbers/{whatsappNumber}/users', [
+    WhatsappController::class,
+    'updateUsers',
+  ])->name('whatsapp.numbers.users.update');
 });
 
 Route::middleware('auth')->group(function () {
