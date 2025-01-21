@@ -29,18 +29,20 @@ COPY . .
 # Install dependencies
 RUN composer install
 
+# Create supervisor log directory
+RUN mkdir -p /var/log/supervisor
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/storage/logs \
+    && chmod -R 775 /var/log/supervisor
 
 # Copy Supervisor configuration
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-
-# Set permissions and create necessary directories
-RUN mkdir -p /var/www/html/storage/logs && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 9000
 EXPOSE 9000
 
 # Start Supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
