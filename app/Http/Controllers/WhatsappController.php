@@ -116,7 +116,9 @@ class WhatsappController extends Controller
     $findWhatsappNumberId = $request->number;
     // dd($findWhatsappNumberId);
     $batch = Bus::batch([])
+      ->allowFailures()
       ->then(function (Batch $batch) use ($passObject, $link, $file) {
+        \Log::info('Batch then running', ['batch_id' => $batch->id]);
         if ($file !== "") {
           File::delete($file);
         }
@@ -125,22 +127,34 @@ class WhatsappController extends Controller
         ]);
       })
       ->finally(function (Batch $batch) use ($passObject, $link, $file) {
+        \Log::info('Batch finally running', ['batch_id' => $batch->id]);
+
         if (!$batch->finished()) {
           resolve(BatchRepository::class)->markAsFinished($batch->id);
         }
+
         if ($file !== "") {
           File::delete($file);
         }
+
         WhatsappBatches::where('job_batches_id', $batch->id)->update([
           'isActive' => false,
         ]);
+
         $checkWhatsappBatches = WhatsappBatches::where(
           'job_batches_id',
           $batch->id
-        );
-        echo strval($batch);
-        echo "finished";
-        echo strval($checkWhatsappBatches);
+        )->first();
+
+        \Log::info('Batch completed', [
+          'batch_id' => $batch->id,
+          'whatsapp_batches_id' => $checkWhatsappBatches
+            ? $checkWhatsappBatches->id
+            : null,
+          'total_jobs' => $batch->totalJobs,
+          'processed_jobs' => $batch->processedJobs(),
+          'failed_jobs' => $batch->failedJobs,
+        ]);
       })
       ->dispatch();
     $whatsappBatches = WhatsappBatches::create([
