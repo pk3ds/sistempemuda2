@@ -47,10 +47,10 @@ USER www-data
 RUN composer install
 
 # Install Vue.js dependencies
-RUN HOME=/var/www npm install --verbose
+# RUN HOME=/var/www npm install --verbose
 
 # Build Vue.js application
-RUN HOME=/var/www npm run build
+# RUN HOME=/var/www npm run build
 
 # Switch back to root for operations that might need elevated permissions
 USER root
