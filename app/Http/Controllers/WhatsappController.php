@@ -64,6 +64,7 @@ class WhatsappController extends Controller
     
     // Ensure port is added
     $baseUrl = $baseUrl . ':' . $whatsappNumber->port;
+    dd($baseUrl, $whatsappNumber);
     
     // Log the constructed URL
     \Log::info('Constructing WhatsApp API URL', [
@@ -101,7 +102,14 @@ class WhatsappController extends Controller
     if ($request->file_upload) {
         $file = $request->file('file_upload');
         $filePath = $file->store('uploads', 'public');
-        $uploadedFile = public_path('storage/' . $filePath);
+        // Use storage_path helper to get the correct absolute path
+        $uploadedFile = storage_path('app/public/' . $filePath);
+        
+        \Log::info('File uploaded', [
+            'original_name' => $file->getClientOriginalName(),
+            'stored_path' => $uploadedFile,
+            'exists' => file_exists($uploadedFile)
+        ]);
     }
 
     // Create batch handler

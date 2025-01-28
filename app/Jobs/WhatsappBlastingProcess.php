@@ -42,46 +42,63 @@ class WhatsappBlastingProcess implements ShouldQueue
 
   public function handle()
   {
-    if (empty($this->link)) {
-      Log::error('WhatsappBlastingProcess: Link is null', [
-        'job_id' => $this->job->getJobId(),
-      ]);
-      throw new \InvalidArgumentException('API link cannot be null');
-    }
-
     try {
       Log::info('WhatsappBlastingProcess: Starting job', [
         'batch_id' => $this->batch() ? $this->batch()->id : null,
         'job_id' => $this->job->getJobId(),
         'link' => $this->link,
+        'file_path' => $this->file,
       ]);
 
       $checkCaption = isset($this->passObject['caption']);
 
+      // Configure HTTP client
+      $httpClient = Http::timeout(30)->withOptions([
+        'verify' => false,
+        'connect_timeout' => 10,
+        'http_errors' => true,
+      ]);
+
       if ($checkCaption && $this->file) {
         if (!file_exists($this->file)) {
+          Log::error('File not found', [
+            'path' => $this->file,
+            'absolute_path' => realpath($this->file),
+            'directory_contents' => $this->file
+              ? scandir(dirname($this->file))
+              : [],
+          ]);
           throw new \Exception("File not found: {$this->file}");
         }
 
-        $api = Http::attach(
-          'image',
-          file_get_contents($this->file),
-          'image.png'
-        )->post($this->link, $this->passObject);
+        Log::info('Reading file for upload', [
+          'file_path' => $this->file,
+          'file_size' => filesize($this->file),
+          'is_readable' => is_readable($this->file),
+        ]);
+
+        $fileContents = file_get_contents($this->file);
+        if ($fileContents === false) {
+          throw new \Exception("Failed to read file contents: {$this->file}");
+        }
+
+        $api = $httpClient
+          ->attach('image', $fileContents, basename($this->file))
+          ->post($this->link, $this->passObject);
       } else {
-        $api = Http::post($this->link, $this->passObject);
+        $api = $httpClient->post($this->link, $this->passObject);
       }
 
       if (!$api->successful()) {
         throw new \Exception('API request failed: ' . $api->body());
       }
 
-      // Add delay between requests
       sleep(3);
 
       Log::info('WhatsappBlastingProcess: Job completed successfully', [
         'batch_id' => $this->batch() ? $this->batch()->id : null,
         'job_id' => $this->job->getJobId(),
+        'response' => $api->json(),
       ]);
     } catch (\Exception $e) {
       Log::error('WhatsappBlastingProcess: Job failed', [
