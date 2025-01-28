@@ -15,6 +15,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Bus;
 use App\Models\User;
+use App\BatchHandlers\WhatsappBatchHandler;
 
 class WhatsappController extends Controller
 {
@@ -115,62 +116,50 @@ class WhatsappController extends Controller
     }
     $findWhatsappNumberId = $request->number;
     // dd($findWhatsappNumberId);
+    $batchHandler = new WhatsappBatchHandler($file);
     $batch = Bus::batch([])
       // ->allowFailures()
       // ->onQueue('whatsapp')
-      ->then(function (Batch $batch) use ($passObject, $link, $file) {
-        \Log::info('Batch then callback', ['batch_id' => $batch->id]);
-        if ($file !== "") {
-          File::delete($file);
-        }
-        WhatsappBatches::where('job_batches_id', $batch->id)->update([
-          'isActive' => false,
-        ]);
-      })
-      ->finally(function (Batch $batch) use ($passObject, $link, $file) {
-        // Ensure proper completion tracking
-        $pendingJobs = $batch->pendingJobs;
-        $totalJobs = $batch->totalJobs;
+      ->then([$batchHandler, 'then'])
+      // ->finally(function (Batch $batch) use ($passObject, $link, $file) {
+      //   // Ensure proper completion tracking
+      //   $pendingJobs = $batch->pendingJobs;
+      //   $totalJobs = $batch->totalJobs;
 
-        \Log::info('Batch finally starting', [
-          'batch_id' => $batch->id,
-          'pending' => $pendingJobs,
-          'total' => $totalJobs,
-          'processed' => $batch->processedJobs(),
-        ]);
+      //   \Log::info('Batch finally starting', [
+      //     'batch_id' => $batch->id,
+      //     'pending' => $pendingJobs,
+      //     'total' => $totalJobs,
+      //     'processed' => $batch->processedJobs(),
+      //   ]);
 
-        // Only proceed if truly finished
-        if ($pendingJobs === 0 && $batch->processedJobs() === $totalJobs) {
-          if ($file !== "") {
-            File::delete($file);
-          }
+      //   // Only proceed if truly finished
+      //   if ($pendingJobs === 0 && $batch->processedJobs() === $totalJobs) {
+      //     if ($file !== "") {
+      //       File::delete($file);
+      //     }
 
-          WhatsappBatches::where('job_batches_id', $batch->id)->update([
-            'isActive' => false,
-          ]);
+      //     WhatsappBatches::where('job_batches_id', $batch->id)->update([
+      //       'isActive' => false,
+      //     ]);
 
-          $checkWhatsappBatches = WhatsappBatches::where(
-            'job_batches_id',
-            $batch->id
-          )->first();
-          \Log::info('Batch completed successfully', [
-            'batch_id' => $batch->id,
-            'whatsapp_batches_id' => $checkWhatsappBatches?->id,
-          ]);
-        } else {
-          \Log::warning('Batch finally called but jobs still pending', [
-            'batch_id' => $batch->id,
-            'pending' => $pendingJobs,
-            'total' => $totalJobs,
-          ]);
-        }
-      })
-      ->catch(function (Batch $batch, Throwable $e) {
-        \Log::error('Batch error occurred', [
-          'batch_id' => $batch->id,
-          'error' => $e->getMessage(),
-        ]);
-      })
+      //     $checkWhatsappBatches = WhatsappBatches::where(
+      //       'job_batches_id',
+      //       $batch->id
+      //     )->first();
+      //     \Log::info('Batch completed successfully', [
+      //       'batch_id' => $batch->id,
+      //       'whatsapp_batches_id' => $checkWhatsappBatches?->id,
+      //     ]);
+      //   } else {
+      //     \Log::warning('Batch finally called but jobs still pending', [
+      //       'batch_id' => $batch->id,
+      //       'pending' => $pendingJobs,
+      //       'total' => $totalJobs,
+      //     ]);
+      //   }
+      // })
+      ->catch([$batchHandler, 'catch'])
       ->dispatch();
     $whatsappBatches = WhatsappBatches::create([
       'whatsapp_number_id' => $findWhatsappNumberId,
