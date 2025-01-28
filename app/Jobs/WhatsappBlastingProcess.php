@@ -2,41 +2,67 @@
 
 namespace App\Jobs;
 
-use App\Models\WhatsappBatches;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class WhatsappBlastingProcess implements ShouldQueue
 {
   use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+  public $passObject;
+  public $link;
+  public $file;
+
+  public $tries = 3;
+  public $timeout = 300;
+  public $maxExceptions = 3;
+
+  public function __construct($passObject, $link, $file = null)
+  {
+    if (empty($link)) {
+      throw new \InvalidArgumentException('API link cannot be null');
+    }
+
+    $this->passObject = $passObject;
+    $this->link = $link;
+    $this->file = $file;
+
+    Log::info('WhatsappBlastingProcess constructed', [
+      'link' => $this->link,
+      'has_file' => !empty($this->file),
+      'pass_object' => $this->passObject,
+    ]);
+  }
+
   public function handle()
   {
-    if (!$this->batch() || $this->batch()->cancelled()) {
-      \Log::info('Job skipped - batch cancelled or missing', [
+    if (empty($this->link)) {
+      Log::error('WhatsappBlastingProcess: Link is null', [
         'job_id' => $this->job->getJobId(),
       ]);
-      return;
+      throw new \InvalidArgumentException('API link cannot be null');
     }
 
     try {
-      \Log::info('WhatsappBlastingProcess: Starting job', [
-        'batch_id' => $this->batch()->id,
+      Log::info('WhatsappBlastingProcess: Starting job', [
+        'batch_id' => $this->batch() ? $this->batch()->id : null,
         'job_id' => $this->job->getJobId(),
-        'pending_jobs' => $this->batch()->pendingJobs,
-        'total_jobs' => $this->batch()->totalJobs,
+        'link' => $this->link,
       ]);
 
-      // Your existing API call logic
       $checkCaption = isset($this->passObject['caption']);
-      if ($checkCaption) {
+
+      if ($checkCaption && $this->file) {
+        if (!file_exists($this->file)) {
+          throw new \Exception("File not found: {$this->file}");
+        }
+
         $api = Http::attach(
           'image',
           file_get_contents($this->file),
@@ -50,31 +76,16 @@ class WhatsappBlastingProcess implements ShouldQueue
         throw new \Exception('API request failed: ' . $api->body());
       }
 
-      // Check if this is the last job
-      if ($this->batch()->pendingJobs === 1) {
-        // 1 because current job hasn't completed yet
-        \Log::info('WhatsappBlastingProcess: Last job detected', [
-          'batch_id' => $this->batch()->id,
-          'job_id' => $this->job->getJobId(),
-        ]);
-
-        // Ensure batch completion is recorded
-        DB::transaction(function () {
-          WhatsappBatches::where('job_batches_id', $this->batch()->id)
-            ->where('isActive', 1)
-            ->update(['isActive' => 0]);
-        });
-      }
-
+      // Add delay between requests
       sleep(3);
 
-      \Log::info('WhatsappBlastingProcess: Job completed', [
-        'batch_id' => $this->batch()->id,
+      Log::info('WhatsappBlastingProcess: Job completed successfully', [
+        'batch_id' => $this->batch() ? $this->batch()->id : null,
         'job_id' => $this->job->getJobId(),
       ]);
     } catch (\Exception $e) {
-      \Log::error('WhatsappBlastingProcess: Job failed', [
-        'batch_id' => $this->batch()->id,
+      Log::error('WhatsappBlastingProcess: Job failed', [
+        'batch_id' => $this->batch() ? $this->batch()->id : null,
         'job_id' => $this->job->getJobId(),
         'error' => $e->getMessage(),
         'trace' => $e->getTraceAsString(),
@@ -85,11 +96,10 @@ class WhatsappBlastingProcess implements ShouldQueue
 
   public function failed(\Throwable $e)
   {
-    \Log::error('WhatsappBlastingProcess: Job failed handler', [
-      'batch_id' => $this->batch()->id ?? 'no-batch',
+    Log::error('WhatsappBlastingProcess: Job failed handler', [
+      'batch_id' => $this->batch() ? $this->batch()->id : null,
       'job_id' => $this->job->getJobId(),
       'error' => $e->getMessage(),
-      'trace' => $e->getTraceAsString(),
     ]);
   }
 }
