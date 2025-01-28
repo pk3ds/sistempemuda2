@@ -17,39 +17,24 @@ class WhatsappBlastingProcess implements ShouldQueue
 {
   use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-  public $passObject;
-  public $link;
-  public $file;
-
-  public $tries = 3;
-  public $timeout = 300;
-  public $maxExceptions = 3;
-
-  /**
-   * Create a new job instance.
-   *
-   * @return void
-   */
-  public function __construct($passObject, $link, $file)
-  {
-    $this->passObject = $passObject;
-    $this->link = $link;
-    $this->file = $file;
-  }
-
-  /**
-   * Execute the job.
-   *
-   * @return void
-   */
   public function handle()
   {
-    try {
-      \Log::info('Starting job process', [
-        'batch_id' => $this->batch()->id,
+    if (!$this->batch() || $this->batch()->cancelled()) {
+      \Log::info('Job skipped - batch cancelled or missing', [
         'job_id' => $this->job->getJobId(),
       ]);
+      return;
+    }
 
+    try {
+      \Log::info('WhatsappBlastingProcess: Starting job', [
+        'batch_id' => $this->batch()->id,
+        'job_id' => $this->job->getJobId(),
+        'pending_jobs' => $this->batch()->pendingJobs,
+        'total_jobs' => $this->batch()->totalJobs,
+      ]);
+
+      // Your existing API call logic
       $checkCaption = isset($this->passObject['caption']);
       if ($checkCaption) {
         $api = Http::attach(
@@ -65,38 +50,46 @@ class WhatsappBlastingProcess implements ShouldQueue
         throw new \Exception('API request failed: ' . $api->body());
       }
 
-      // Add completion check
-      if ($this->batch()->pendingJobs === 0) {
-        WhatsappBatches::where('job_batches_id', $this->batch()->id)->update([
-          'isActive' => false,
+      // Check if this is the last job
+      if ($this->batch()->pendingJobs === 1) {
+        // 1 because current job hasn't completed yet
+        \Log::info('WhatsappBlastingProcess: Last job detected', [
+          'batch_id' => $this->batch()->id,
+          'job_id' => $this->job->getJobId(),
         ]);
 
-        if ($this->file && File::exists($this->file)) {
-          File::delete($this->file);
-        }
+        // Ensure batch completion is recorded
+        DB::transaction(function () {
+          WhatsappBatches::where('job_batches_id', $this->batch()->id)
+            ->where('isActive', 1)
+            ->update(['isActive' => 0]);
+        });
       }
 
       sleep(3);
 
-      \Log::info('Job completed successfully', [
+      \Log::info('WhatsappBlastingProcess: Job completed', [
         'batch_id' => $this->batch()->id,
         'job_id' => $this->job->getJobId(),
       ]);
     } catch (\Exception $e) {
-      \Log::error('Job failed', [
+      \Log::error('WhatsappBlastingProcess: Job failed', [
         'batch_id' => $this->batch()->id,
         'job_id' => $this->job->getJobId(),
         'error' => $e->getMessage(),
+        'trace' => $e->getTraceAsString(),
       ]);
       throw $e;
     }
   }
 
-  public function failed(Throwable $exception)
+  public function failed(\Throwable $e)
   {
-    \Log::error('Job failed in failed method', [
+    \Log::error('WhatsappBlastingProcess: Job failed handler', [
       'batch_id' => $this->batch()->id ?? 'no-batch',
-      'error' => $exception->getMessage(),
+      'job_id' => $this->job->getJobId(),
+      'error' => $e->getMessage(),
+      'trace' => $e->getTraceAsString(),
     ]);
   }
 }
