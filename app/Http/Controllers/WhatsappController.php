@@ -116,8 +116,8 @@ class WhatsappController extends Controller
     $findWhatsappNumberId = $request->number;
     // dd($findWhatsappNumberId);
     $batch = Bus::batch([])
-      ->allowFailures()
-      ->onQueue('whatsapp')
+      // ->allowFailures()
+      // ->onQueue('whatsapp')
       ->then(function (Batch $batch) use ($passObject, $link, $file) {
         \Log::info('Batch then callback', ['batch_id' => $batch->id]);
         if ($file !== "") {
