@@ -64,7 +64,6 @@ class WhatsappController extends Controller
     
     // Ensure port is added
     $baseUrl = $baseUrl . ':' . $whatsappNumber->port;
-    dd($baseUrl, $whatsappNumber);
     
     // Log the constructed URL
     \Log::info('Constructing WhatsApp API URL', [
