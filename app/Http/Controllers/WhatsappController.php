@@ -166,14 +166,6 @@ class WhatsappController extends Controller
       'job_batches_id' => $batch->id,
       'isActive' => true,
     ]);
-    // $activeWhatsappAndAvailable = WhatsappNumber::where('isActive', true)->whereRelation('whatsappBatches', 'isActive', '=', false)->get();
-    // $activeWhatsappAndAvailable = WhatsappNumber::where('isActive', true)->whereHas('whatsappBatches', function($query) {
-    //     $query->where('isActive', false);
-    // })->orDoesntHave('whatsappBatches');
-    // $activeWhatsappAndAvailable = WhatsappNumber::where('isActive', 1)->whereDoesntHave('whatsappBatches')->orWhereHas('whatsappBatches', function($query) {
-    //     $query->where('isActive', false);
-    // })->get();
-    // dd($activeWhatsappAndAvailable);
     if (!$personal) {
       foreach ($groups as $key => $group) {
         // uncomment this for the prod function

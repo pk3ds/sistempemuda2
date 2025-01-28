@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\WhatsappBatches;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -43,12 +44,6 @@ class WhatsappBlastingProcess implements ShouldQueue
    */
   public function handle()
   {
-    // Check if part of batch and if batch still exists
-    if (!$this->batch() || $this->batch()->cancelled()) {
-      \Log::info('Job skipped - batch cancelled or missing');
-      return;
-    }
-
     try {
       \Log::info('Starting job process', [
         'batch_id' => $this->batch()->id,
@@ -68,6 +63,17 @@ class WhatsappBlastingProcess implements ShouldQueue
 
       if (!$api->successful()) {
         throw new \Exception('API request failed: ' . $api->body());
+      }
+
+      // Add completion check
+      if ($this->batch()->pendingJobs === 0) {
+        WhatsappBatches::where('job_batches_id', $this->batch()->id)->update([
+          'isActive' => false,
+        ]);
+
+        if ($this->file && File::exists($this->file)) {
+          File::delete($this->file);
+        }
       }
 
       sleep(3);
