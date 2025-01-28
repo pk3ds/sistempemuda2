@@ -1,10 +1,6 @@
-# Use an official PHP runtime as a parent image
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -12,7 +8,10 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    nodejs \
+    npm \
+    supervisor
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -23,38 +22,27 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Node.js and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs
+# Set working directory
+WORKDIR /var/www
 
-# Verify Node.js and npm installation
-RUN node --version && npm --version
+# Create supervisor log directory
+RUN mkdir -p /var/log/supervisor
 
-# Copy existing application directory contents
-COPY . .
+# Copy supervisor configuration
+COPY ./supervisor.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
+# Create system user
+RUN useradd -G www-data,root -u 1000 -d /home/laravel laravel
+RUN mkdir -p /home/laravel/.composer && \
+    chown -R laravel:laravel /home/laravel
 
-# Create .npm directory for the www-data user
-RUN mkdir -p /var/www/.npm && chown -R www-data:www-data /var/www/.npm
+# Create required directories and set permissions
+RUN mkdir -p /var/www/html/storage/logs && \
+    chown -R laravel:www-data /var/www/html && \
+    chmod -R 775 /var/www/html/storage
 
-# Switch to www-data user
-USER www-data
+# Switch to non-root user for security
+USER laravel
 
-# Install Laravel dependencies
-RUN composer install
-
-# Install Vue.js dependencies
-# RUN HOME=/var/www npm install --verbose
-
-# Build Vue.js application
-# RUN HOME=/var/www npm run build
-
-# Switch back to root for operations that might need elevated permissions
-USER root
-
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# The supervisor process will be started in the command
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

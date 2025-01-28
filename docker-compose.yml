@@ -1,51 +1,37 @@
-version: "3"
+version: "3.8"
 services:
-  sistempemuda-app:
+  sistempemuda2_app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: sistempemuda-app
+    container_name: sistempemuda2_app
     restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
     networks:
       - npm_network
       - mariadb_network
-    environment:
-      - DB_HOST=centralized_mariadb
-      - DB_DATABASE=sistempemuda_db
-      - DB_USERNAME=sistempemuda_user
-      - DB_PASSWORD=sistempemuda
-    volumes:
-      - ./:/var/www/html
-      - ./public/build:/var/www/html/public/build
-      - /var/www/html/vendor
-      - /var/www/html/node_modules
-      - /var/www/html/storage
-      - ./supervisor.conf:/etc/supervisor/conf.d/supervisord.conf
-    user: "root"
-    command: >
-      bash -c "
-        chmod -R 775 /var/www/html/storage &&
-        chmod -R 775 /var/www/html/bootstrap/cache &&
-        chown -R www-data:www-data /var/www/html/storage &&
-        chown -R www-data:www-data /var/www/html/bootstrap/cache &&
-        apt-get update &&
-        apt-get install -y supervisor &&
-        /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf"
+      - sistempemuda_network
+    user: root
+
   nginx:
     image: nginx:alpine
-    container_name: sistempemuda-nginx
+    container_name: sistempemuda2_nginx
     restart: unless-stopped
     ports:
-      - "82:80"
+      - "85:80"
     volumes:
-      - ./:/var/www/html
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - sistempemuda-app
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d/
     networks:
       - npm_network
+      - sistempemuda_network
+
 networks:
-  mariadb_network:
-    external: true
   npm_network:
     external: true
+  mariadb_network:
+    external: true
+  sistempemuda_network:
+    driver: bridge
