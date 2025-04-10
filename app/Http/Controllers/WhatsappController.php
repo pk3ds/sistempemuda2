@@ -58,7 +58,7 @@ class WhatsappController extends Controller
       $increaseTimeLimit = set_time_limit(0);
       
       // Construct base API URL - FIX: Add http:// prefix and avoid double colons
-      $baseUrl = "http://";
+      $baseUrl = "";
       if ($whatsappNumber->address) {
           $baseUrl .= "192.168." . $whatsappNumber->address;
       } else {
@@ -102,17 +102,26 @@ class WhatsappController extends Controller
       // Handle file upload
       $uploadedFile = null;
       if ($request->file_upload) {
-          $file = $request->file('file_upload');
-          $filePath = $file->store('uploads', 'public');
-          // Use storage_path helper to get the correct absolute path
-          $uploadedFile = storage_path('app/public/' . $filePath);
-          
-          \Log::info('File uploaded', [
-              'original_name' => $file->getClientOriginalName(),
-              'stored_path' => $uploadedFile,
-              'exists' => file_exists($uploadedFile)
-          ]);
-      }
+        $file = $request->file('file_upload');
+        
+        // Make sure the directory exists
+        $uploadPath = storage_path('app/public/uploads');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+        
+        $filePath = $file->store('uploads', 'public');
+        $uploadedFile = storage_path('app/public/' . $filePath);
+        
+        // Log more detailed information
+        \Log::info('File upload attempt', [
+            'upload_path_exists' => file_exists($uploadPath),
+            'upload_path_writable' => is_writable($uploadPath),
+            'original_name' => $file->getClientOriginalName(),
+            'stored_path' => $uploadedFile,
+            'stored_path_exists' => file_exists($uploadedFile)
+        ]);
+    }
 
       // Create batch handler
       $batchHandler = new WhatsappBatchHandler($uploadedFile);
