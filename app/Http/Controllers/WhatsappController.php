@@ -53,117 +53,120 @@ class WhatsappController extends Controller
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request)
-{
-    $whatsappNumber = WhatsappNumber::where('id', $request->number)->firstOrFail();
-    $increaseTimeLimit = set_time_limit(0);
-    
-    // Construct base API URL
-    $baseUrl = $whatsappNumber->address 
-        ? "192.168.{$whatsappNumber->address}" 
-        : env('WHATSAPP_API');
-    
-    // Ensure port is added
-    $baseUrl = $baseUrl . ':' . $whatsappNumber->port;
-    
-    // Log the constructed URL
-    \Log::info('Constructing WhatsApp API URL', [
-        'base_url' => $baseUrl,
-        'whatsapp_number' => $whatsappNumber->id
-    ]);
+  {
+      $whatsappNumber = WhatsappNumber::where('id', $request->number)->firstOrFail();
+      $increaseTimeLimit = set_time_limit(0);
+      
+      // Construct base API URL - FIX: Add http:// prefix and avoid double colons
+      $baseUrl = "http://";
+      if ($whatsappNumber->address) {
+          $baseUrl .= "192.168." . $whatsappNumber->address;
+      } else {
+          $baseUrl .= env('WHATSAPP_API');
+      }
+      
+      // Ensure port is added properly
+      $baseUrl .= ":" . $whatsappNumber->port;
+      
+      // Log the constructed URL
+      \Log::info('Constructing WhatsApp API URL', [
+          'base_url' => $baseUrl,
+          'whatsapp_number' => $whatsappNumber->id
+      ]);
 
-    // Determine endpoint based on option
-    $endpoint = match($request->option) {
-        'message' => '/send/message',
-        'photo' => '/send/image',
-        'video' => '/send/video',
-        default => throw new \InvalidArgumentException('Invalid option type')
-    };
-    
-    // Construct final API URL
-    $apiUrl = $baseUrl . $endpoint;
-    
-    \Log::info('Final API URL constructed', [
-        'api_url' => $apiUrl
-    ]);
+      // Determine endpoint based on option
+      $endpoint = match($request->option) {
+          'message' => '/send/message',
+          'photo' => '/send/image',
+          'video' => '/send/video',
+          default => throw new \InvalidArgumentException('Invalid option type')
+      };
+      
+      // Construct final API URL
+      $apiUrl = $baseUrl . $endpoint;
+      
+      \Log::info('Final API URL constructed', [
+          'api_url' => $apiUrl
+      ]);
 
-    // Prepare message object
-    $passObject = match($request->option) {
-        'message' => ['message' => $request->message],
-        'photo', 'video' => [
-            'caption' => $request->message,
-            'compress' => true
-        ],
-        default => throw new \InvalidArgumentException('Invalid option type')
-    };
+      // Prepare message object
+      $passObject = match($request->option) {
+          'message' => ['message' => $request->message],
+          'photo', 'video' => [
+              'caption' => $request->message,
+              'compress' => true
+          ],
+          default => throw new \InvalidArgumentException('Invalid option type')
+      };
 
-    // Handle file upload
-    $uploadedFile = null;
-    if ($request->file_upload) {
-        $file = $request->file('file_upload');
-        $filePath = $file->store('uploads', 'public');
-        // Use storage_path helper to get the correct absolute path
-        $uploadedFile = storage_path('app/public/' . $filePath);
-        
-        \Log::info('File uploaded', [
-            'original_name' => $file->getClientOriginalName(),
-            'stored_path' => $uploadedFile,
-            'exists' => file_exists($uploadedFile)
-        ]);
-    }
+      // Handle file upload
+      $uploadedFile = null;
+      if ($request->file_upload) {
+          $file = $request->file('file_upload');
+          $filePath = $file->store('uploads', 'public');
+          // Use storage_path helper to get the correct absolute path
+          $uploadedFile = storage_path('app/public/' . $filePath);
+          
+          \Log::info('File uploaded', [
+              'original_name' => $file->getClientOriginalName(),
+              'stored_path' => $uploadedFile,
+              'exists' => file_exists($uploadedFile)
+          ]);
+      }
 
-    // Create batch handler
-    $batchHandler = new WhatsappBatchHandler($uploadedFile);
+      // Create batch handler
+      $batchHandler = new WhatsappBatchHandler($uploadedFile);
 
-    // Create and configure batch
-    $batch = Bus::batch([])
-        ->then([$batchHandler, 'then'])
-        ->catch([$batchHandler, 'catch'])
-        ->dispatch();
+      // Create and configure batch
+      $batch = Bus::batch([])
+          ->then([$batchHandler, 'then'])
+          ->catch([$batchHandler, 'catch'])
+          ->dispatch();
 
-    // Create WhatsappBatches record
-    $whatsappBatches = WhatsappBatches::create([
-        'whatsapp_number_id' => $whatsappNumber->id,
-        'job_batches_id' => $batch->id,
-        'isActive' => true,
-    ]);
+      // Create WhatsappBatches record
+      $whatsappBatches = WhatsappBatches::create([
+          'whatsapp_number_id' => $whatsappNumber->id,
+          'job_batches_id' => $batch->id,
+          'isActive' => true,
+      ]);
 
-    // Add jobs to batch based on personal/group sending
-    if (!$request->array_number) {
-        // Get groups
-        $groupsResponse = Http::get($baseUrl . '/user/my/groups');
-        if (!$groupsResponse->successful()) {
-            throw new \Exception('Failed to fetch WhatsApp groups');
-        }
-        
-        $groups = $groupsResponse->json()['results']['data'] ?? [];
-        
-        foreach ($groups as $group) {
-            $messageData = $passObject;
-            $messageData['phone'] = $group['JID'];
-            
-            $batch->add(new WhatsappBlastingProcess(
-                $messageData,
-                $apiUrl,
-                $uploadedFile
-            ));
-        }
-    } else {
-        // Handle personal messages
-        $numbers = array_filter(explode(',', $request->array_number));
-        foreach ($numbers as $number) {
-            $messageData = $passObject;
-            $messageData['phone'] = trim($number) . '@s.whatsapp.net';
-            
-            $batch->add(new WhatsappBlastingProcess(
-                $messageData,
-                $apiUrl,
-                $uploadedFile
-            ));
-        }
-    }
+      // Add jobs to batch based on personal/group sending
+      if (!$request->array_number) {
+          // Get groups
+          $groupsResponse = Http::get($baseUrl . '/user/my/groups');
+          if (!$groupsResponse->successful()) {
+              throw new \Exception('Failed to fetch WhatsApp groups');
+          }
+          
+          $groups = $groupsResponse->json()['results']['data'] ?? [];
+          
+          foreach ($groups as $group) {
+              $messageData = $passObject;
+              $messageData['phone'] = $group['JID'];
+              
+              $batch->add(new WhatsappBlastingProcess(
+                  $messageData,
+                  $apiUrl,
+                  $uploadedFile
+              ));
+          }
+      } else {
+          // Handle personal messages
+          $numbers = array_filter(explode(',', $request->array_number));
+          foreach ($numbers as $number) {
+              $messageData = $passObject;
+              $messageData['phone'] = trim($number) . '@s.whatsapp.net';
+              
+              $batch->add(new WhatsappBlastingProcess(
+                  $messageData,
+                  $apiUrl,
+                  $uploadedFile
+              ));
+          }
+      }
 
-    return redirect()->back()->with('success', 'Message send is being processed');
-}
+      return redirect()->back()->with('success', 'Message send is being processed');
+  }
 
   /**
    * Display the specified resource.
